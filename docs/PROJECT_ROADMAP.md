@@ -14,15 +14,15 @@ Define a scalable, maintainable architecture before writing production code.
 ### ✅ Tasks
 
 - [✔] Decide repository strategy (Monorepo vs Polyrepo)
-- [ ] Define Backend architecture (Layers & Responsibilities)
-- [ ] Define Frontend architecture (App Router, State, Data Fetching)
-- [ ] Decide API strategy (REST vs GraphQL responsibilities)
-- [ ] Define Auth strategy (Cookies, JWT, Refresh Tokens)
-- [ ] Define RBAC model (User / Admin / Superadmin)
-- [ ] Define environment & configuration strategy
-- [ ] Draw high-level system flow (textual or diagram)
-- [ ] Create folder structure (backend & frontend)
-- [ ] Write Architecture Decision Record (ADR)
+- [✔] Define Backend architecture (Layers & Responsibilities)
+- [✔] Define Frontend architecture (App Router, State, Data Fetching)
+- [✔] Decide API strategy (REST vs GraphQL responsibilities)
+- [✔] Define Auth strategy (Cookies, JWT, Refresh Tokens)
+- [✔] Define RBAC model (User / Admin / Superadmin)
+- [✔] Define environment & configuration strategy
+- [✔] Draw high-level system flow (textual or diagram)
+- [✔] Create folder structure (backend & frontend)
+- [✔] Write Architecture Decision Record (ADR)
 
 ### 📦 Deliverables
 
