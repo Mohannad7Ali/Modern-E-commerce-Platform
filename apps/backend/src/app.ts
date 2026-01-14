@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { Server as HTTPServer } from 'http';
+import { errorMiddleware } from './shared/middlewares/error.middleware';
 dotenv.config();
 
 export const createServer = async function createServer() {
@@ -13,5 +14,6 @@ export const createServer = async function createServer() {
   app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
   });
+  app.use(errorMiddleware);
   return { app, httpServer };
 };

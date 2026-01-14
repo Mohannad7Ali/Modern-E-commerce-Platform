@@ -10,7 +10,7 @@ import prettierConfig from 'eslint-config-prettier';
 export default defineConfig([
   {
     // تجاهل ملفات الإعدادات من فحص النوع (Type-aware linting)
-    ignores: ['eslint.config.js', 'eslint.config.mjs']
+    ignores: ['dist/**', 'node_modules/**', 'eslint.config.js', 'prisma.config.ts', '*.config.js', 'src/generated/**']
   },
   // 1. إعدادات ملفات الجافاسكريبت والتايب سكريبت
   {
