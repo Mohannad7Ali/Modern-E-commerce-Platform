@@ -46,7 +46,7 @@ export class AuthService {
     return this.issueTokens(storedToken.userId, 'USER');
   }
   // this function logout user by revoking refresh token
-  private static async logout(refreshToken: string) {
+  static async logout(refreshToken: string) {
     const tokenHash = TokenService.hashRefreshToken(refreshToken);
     const storedToken = await RefreshTokenRepository.findValid(tokenHash);
     if (storedToken) {
