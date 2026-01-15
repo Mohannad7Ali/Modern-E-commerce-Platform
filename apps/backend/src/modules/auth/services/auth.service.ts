@@ -20,7 +20,7 @@ export class AuthService {
   static async register(data: { email: string; password: string }) {
     const existingUser = await UserRepository.findByEmail(data.email);
     if (existingUser) {
-      throw new InvalidCredentialsError();
+      throw new EmailAlreadyExistsError();
     }
     const passwordHash = await hashPassword(data.password);
     const user = await UserRepository.create({ email: data.email, passwordHash });
