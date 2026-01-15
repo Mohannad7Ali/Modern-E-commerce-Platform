@@ -1,6 +1,7 @@
+export type Role = 'USER' | 'ADMIN' | 'SUPERADMIN';
 export interface AccessTokenPayload {
   userId: string;
-  role: 'USER' | 'ADMIN' | 'SUPERADMIN';
+  role: Role;
 }
 
 export interface RefreshTokenPayload {
