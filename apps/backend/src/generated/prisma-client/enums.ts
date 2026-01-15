@@ -10,72 +10,17 @@
 */
 
 export const ROLE = {
-  ADMIN: 'ADMIN',
   USER: 'USER',
+  ADMIN: 'ADMIN',
   SUPERADMIN: 'SUPERADMIN'
 } as const
 
 export type ROLE = (typeof ROLE)[keyof typeof ROLE]
 
 
-export const TRANSACTION_STATUS = {
-  PENDING: 'PENDING',
-  PROCESSING: 'PROCESSING',
-  SHIPPED: 'SHIPPED',
-  IN_TRANSIT: 'IN_TRANSIT',
-  DELIVERED: 'DELIVERED',
-  CANCELED: 'CANCELED',
-  RETURNED: 'RETURNED',
-  REFUNDED: 'REFUNDED'
+export const VERIFICATION_TYPE = {
+  EMAIL_VERIFY: 'EMAIL_VERIFY',
+  PASSWORD_RESET: 'PASSWORD_RESET'
 } as const
 
-export type TRANSACTION_STATUS = (typeof TRANSACTION_STATUS)[keyof typeof TRANSACTION_STATUS]
-
-
-export const PAYMENT_STATUS = {
-  PENDING: 'PENDING',
-  PAID: 'PAID',
-  CANCELED: 'CANCELED',
-  FAILED: 'FAILED',
-  REFUNDED: 'REFUNDED',
-  PARTIALLY_REFUNDED: 'PARTIALLY_REFUNDED'
-} as const
-
-export type PAYMENT_STATUS = (typeof PAYMENT_STATUS)[keyof typeof PAYMENT_STATUS]
-
-
-export const CART_STATUS = {
-  ACTIVE: 'ACTIVE',
-  ABANDONED: 'ABANDONED',
-  CONVERTED: 'CONVERTED'
-} as const
-
-export type CART_STATUS = (typeof CART_STATUS)[keyof typeof CART_STATUS]
-
-
-export const CHAT_STATUS = {
-  OPEN: 'OPEN',
-  RESOLVED: 'RESOLVED'
-} as const
-
-export type CHAT_STATUS = (typeof CHAT_STATUS)[keyof typeof CHAT_STATUS]
-
-
-export const CART_EVENT = {
-  PENDING: 'PENDING',
-  ADD: 'ADD',
-  CHECKOUT_STARTED: 'CHECKOUT_STARTED',
-  CHECKOUT_COMPLETED: 'CHECKOUT_COMPLETED'
-} as const
-
-export type CART_EVENT = (typeof CART_EVENT)[keyof typeof CART_EVENT]
-
-
-export const SECTION_TYPE = {
-  HERO: 'HERO',
-  PROMOTIONAL: 'PROMOTIONAL',
-  BENEFITS: 'BENEFITS',
-  NEW_ARRIVALS: 'NEW_ARRIVALS'
-} as const
-
-export type SECTION_TYPE = (typeof SECTION_TYPE)[keyof typeof SECTION_TYPE]
+export type VERIFICATION_TYPE = (typeof VERIFICATION_TYPE)[keyof typeof VERIFICATION_TYPE]

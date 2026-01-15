@@ -52,31 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Product: 'Product',
-  ProductVariant: 'ProductVariant',
-  Attribute: 'Attribute',
-  AttributeValue: 'AttributeValue',
-  ProductVariantAttribute: 'ProductVariantAttribute',
-  Category: 'Category',
-  CategoryAttribute: 'CategoryAttribute',
-  StockMovement: 'StockMovement',
-  Restock: 'Restock',
-  Review: 'Review',
-  Order: 'Order',
-  OrderItem: 'OrderItem',
-  Payment: 'Payment',
-  Address: 'Address',
-  Shipment: 'Shipment',
-  Transaction: 'Transaction',
-  Cart: 'Cart',
-  CartItem: 'CartItem',
-  CartEvent: 'CartEvent',
-  Interaction: 'Interaction',
-  Report: 'Report',
-  Log: 'Log',
-  Section: 'Section',
-  Chat: 'Chat',
-  ChatMessage: 'ChatMessage'
+  RefreshToken: 'RefreshToken',
+  VerificationToken: 'VerificationToken'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -107,6 +84,8 @@ export const UserScalarFieldEnum = {
   resetPasswordToken: 'resetPasswordToken',
   resetPasswordTokenExpiresAt: 'resetPasswordTokenExpiresAt',
   role: 'role',
+  isEmailVerified: 'isEmailVerified',
+  lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -114,333 +93,29 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-export const ProductScalarFieldEnum = {
+export const RefreshTokenScalarFieldEnum = {
   id: 'id',
-  name: 'name',
-  description: 'description',
-  slug: 'slug',
-  salesCount: 'salesCount',
-  isNew: 'isNew',
-  isFeatured: 'isFeatured',
-  isTrending: 'isTrending',
-  isBestSeller: 'isBestSeller',
-  averageRating: 'averageRating',
-  reviewCount: 'reviewCount',
-  categoryId: 'categoryId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
-
-
-export const ProductVariantScalarFieldEnum = {
-  id: 'id',
-  productId: 'productId',
-  sku: 'sku',
-  images: 'images',
-  price: 'price',
-  stock: 'stock',
-  lowStockThreshold: 'lowStockThreshold',
-  barcode: 'barcode',
-  warehouseLocation: 'warehouseLocation',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ProductVariantScalarFieldEnum = (typeof ProductVariantScalarFieldEnum)[keyof typeof ProductVariantScalarFieldEnum]
-
-
-export const AttributeScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  slug: 'slug',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type AttributeScalarFieldEnum = (typeof AttributeScalarFieldEnum)[keyof typeof AttributeScalarFieldEnum]
-
-
-export const AttributeValueScalarFieldEnum = {
-  id: 'id',
-  attributeId: 'attributeId',
-  value: 'value',
-  slug: 'slug',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type AttributeValueScalarFieldEnum = (typeof AttributeValueScalarFieldEnum)[keyof typeof AttributeValueScalarFieldEnum]
-
-
-export const ProductVariantAttributeScalarFieldEnum = {
-  id: 'id',
-  variantId: 'variantId',
-  attributeId: 'attributeId',
-  valueId: 'valueId',
-  createdAt: 'createdAt'
-} as const
-
-export type ProductVariantAttributeScalarFieldEnum = (typeof ProductVariantAttributeScalarFieldEnum)[keyof typeof ProductVariantAttributeScalarFieldEnum]
-
-
-export const CategoryScalarFieldEnum = {
-  id: 'id',
-  slug: 'slug',
-  name: 'name',
-  description: 'description',
-  images: 'images',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
-
-
-export const CategoryAttributeScalarFieldEnum = {
-  id: 'id',
-  categoryId: 'categoryId',
-  attributeId: 'attributeId',
-  isRequired: 'isRequired',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type CategoryAttributeScalarFieldEnum = (typeof CategoryAttributeScalarFieldEnum)[keyof typeof CategoryAttributeScalarFieldEnum]
-
-
-export const StockMovementScalarFieldEnum = {
-  id: 'id',
-  variantId: 'variantId',
-  quantity: 'quantity',
-  reason: 'reason',
+  token: 'token',
   userId: 'userId',
-  createdAt: 'createdAt'
-} as const
-
-export type StockMovementScalarFieldEnum = (typeof StockMovementScalarFieldEnum)[keyof typeof StockMovementScalarFieldEnum]
-
-
-export const RestockScalarFieldEnum = {
-  id: 'id',
-  variantId: 'variantId',
-  quantity: 'quantity',
-  notes: 'notes',
-  userId: 'userId',
-  createdAt: 'createdAt'
-} as const
-
-export type RestockScalarFieldEnum = (typeof RestockScalarFieldEnum)[keyof typeof RestockScalarFieldEnum]
-
-
-export const ReviewScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  productId: 'productId',
-  rating: 'rating',
-  comment: 'comment',
+  expiresAt: 'expiresAt',
+  revoked: 'revoked',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
+export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
 
 
-export const OrderScalarFieldEnum = {
+export const VerificationTokenScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
-  amount: 'amount',
-  orderDate: 'orderDate',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
-
-
-export const OrderItemScalarFieldEnum = {
-  id: 'id',
-  orderId: 'orderId',
-  variantId: 'variantId',
-  quantity: 'quantity',
-  price: 'price',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type OrderItemScalarFieldEnum = (typeof OrderItemScalarFieldEnum)[keyof typeof OrderItemScalarFieldEnum]
-
-
-export const PaymentScalarFieldEnum = {
-  id: 'id',
-  method: 'method',
-  amount: 'amount',
-  userId: 'userId',
-  orderId: 'orderId',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
-
-
-export const AddressScalarFieldEnum = {
-  id: 'id',
-  city: 'city',
-  state: 'state',
-  country: 'country',
-  zip: 'zip',
-  street: 'street',
-  userId: 'userId',
-  orderId: 'orderId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type AddressScalarFieldEnum = (typeof AddressScalarFieldEnum)[keyof typeof AddressScalarFieldEnum]
-
-
-export const ShipmentScalarFieldEnum = {
-  id: 'id',
-  carrier: 'carrier',
-  trackingNumber: 'trackingNumber',
-  shippedDate: 'shippedDate',
-  deliveryDate: 'deliveryDate',
-  orderId: 'orderId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ShipmentScalarFieldEnum = (typeof ShipmentScalarFieldEnum)[keyof typeof ShipmentScalarFieldEnum]
-
-
-export const TransactionScalarFieldEnum = {
-  id: 'id',
-  orderId: 'orderId',
-  status: 'status',
-  transactionDate: 'transactionDate',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
-
-
-export const CartScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  sessionId: 'sessionId',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type CartScalarFieldEnum = (typeof CartScalarFieldEnum)[keyof typeof CartScalarFieldEnum]
-
-
-export const CartItemScalarFieldEnum = {
-  id: 'id',
-  cartId: 'cartId',
-  variantId: 'variantId',
-  quantity: 'quantity',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type CartItemScalarFieldEnum = (typeof CartItemScalarFieldEnum)[keyof typeof CartItemScalarFieldEnum]
-
-
-export const CartEventScalarFieldEnum = {
-  id: 'id',
-  cartId: 'cartId',
-  userId: 'userId',
-  sessionId: 'sessionId',
-  eventType: 'eventType',
-  timestamp: 'timestamp',
-  createdAt: 'createdAt'
-} as const
-
-export type CartEventScalarFieldEnum = (typeof CartEventScalarFieldEnum)[keyof typeof CartEventScalarFieldEnum]
-
-
-export const InteractionScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  sessionId: 'sessionId',
-  productId: 'productId',
+  token: 'token',
   type: 'type',
-  createdAt: 'createdAt'
-} as const
-
-export type InteractionScalarFieldEnum = (typeof InteractionScalarFieldEnum)[keyof typeof InteractionScalarFieldEnum]
-
-
-export const ReportScalarFieldEnum = {
-  id: 'id',
-  type: 'type',
-  format: 'format',
   userId: 'userId',
-  createdAt: 'createdAt',
-  parameters: 'parameters',
-  filePath: 'filePath'
-} as const
-
-export type ReportScalarFieldEnum = (typeof ReportScalarFieldEnum)[keyof typeof ReportScalarFieldEnum]
-
-
-export const LogScalarFieldEnum = {
-  id: 'id',
-  level: 'level',
-  message: 'message',
-  context: 'context',
+  expiresAt: 'expiresAt',
   createdAt: 'createdAt'
 } as const
 
-export type LogScalarFieldEnum = (typeof LogScalarFieldEnum)[keyof typeof LogScalarFieldEnum]
-
-
-export const SectionScalarFieldEnum = {
-  id: 'id',
-  type: 'type',
-  title: 'title',
-  description: 'description',
-  images: 'images',
-  icons: 'icons',
-  link: 'link',
-  ctaText: 'ctaText',
-  isVisible: 'isVisible',
-  primaryColor: 'primaryColor',
-  secondaryColor: 'secondaryColor'
-} as const
-
-export type SectionScalarFieldEnum = (typeof SectionScalarFieldEnum)[keyof typeof SectionScalarFieldEnum]
-
-
-export const ChatScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ChatScalarFieldEnum = (typeof ChatScalarFieldEnum)[keyof typeof ChatScalarFieldEnum]
-
-
-export const ChatMessageScalarFieldEnum = {
-  id: 'id',
-  chatId: 'chatId',
-  senderId: 'senderId',
-  content: 'content',
-  type: 'type',
-  url: 'url',
-  createdAt: 'createdAt'
-} as const
-
-export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
+export type VerificationTokenScalarFieldEnum = (typeof VerificationTokenScalarFieldEnum)[keyof typeof VerificationTokenScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -449,21 +124,6 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
-
-
-export const JsonNullValueInput = {
-  JsonNull: 'JsonNull'
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
-
-
-export const NullableJsonNullValueInput = {
-  DbNull: 'DbNull',
-  JsonNull: 'JsonNull'
-} as const
-
-export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -480,13 +140,4 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
-export const JsonNullValueFilter = {
-  DbNull: 'DbNull',
-  JsonNull: 'JsonNull',
-  AnyNull: 'AnyNull'
-} as const
-
-export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
