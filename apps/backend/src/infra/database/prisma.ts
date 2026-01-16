@@ -18,7 +18,18 @@ import env from '@/config/env';
  * This is better for performance than opening a new connection for every request.
  */
 const pool = new Pool({
-  connectionString: env.DATABASE_URL // Use connection string
+  connectionString: env.DATABASE_URL, // Use connection string
+  max: 10, // أقصى عدد اتصالات متزامنة
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000, // ارفع الوقت إلى 10 ثوانٍ
+  ssl: {
+    rejectUnauthorized: false // لضمان عدم فشل التوثيق الأمني في بيئة التطوير
+  },
+  keepAlive: true // لإبقاء الاتصال حياً
+});
+// التعامل مع أخطاء الـ Pool المفاجئة لكي لا ينهار السيرفر
+pool.on('error', err => {
+  console.error('Unexpected error on idle client', err);
 });
 
 // -----------------------------
