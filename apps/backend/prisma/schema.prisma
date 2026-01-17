@@ -90,3 +90,41 @@ model VerificationToken {
 
   @@index([userId, type])
 }
+model Category {
+  id          String              @id @default(uuid())
+  slug        String              @unique
+  name        String
+  description String?
+  images      String[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt 
+
+  // relations
+  products    Product[]
+  // attributes  CategoryAttribute[]
+}
+model Product {
+  id            String           @id @default(uuid())
+  name          String           @unique
+  description   String?
+  slug          String           @unique
+  salesCount    Int              @default(0)
+  isNew         Boolean          @default(false)
+  isFeatured    Boolean          @default(false)
+  isTrending    Boolean          @default(false)
+  isBestSeller  Boolean          @default(false)
+  averageRating Float            @default(0)
+  reviewCount   Int              @default(0)
+
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  //relation 
+  categoryId    String?
+  category      Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  // variants      ProductVariant[]
+  // interactions  Interaction[]
+  // reviews       Review[]
+
+  @@index([name, slug])
+}

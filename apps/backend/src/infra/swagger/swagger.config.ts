@@ -1,20 +1,27 @@
-import swaggerJSDoc from 'swagger-jsdoc';
-import path from 'path';
-const options = {
+import swaggerJsdoc from 'swagger-jsdoc';
+
+export const swaggerSpec = swaggerJsdoc({
   definition: {
     openapi: '3.0.0',
     info: {
       title: 'E-commerce API',
       version: '1.0.0',
-      description: 'Documentation for Auth Module'
+      description: 'Production-ready E-commerce API'
     },
-    servers: [{ url: 'http://localhost:7000/api/v1' }]
+    servers: [
+      {
+        url: '/api'
+      }
+    ],
+    components: {
+      securitySchemes: {
+        cookieAuth: {
+          type: 'apiKey',
+          in: 'cookie',
+          name: 'accessToken'
+        }
+      }
+    }
   },
-  // هنا نحدد مكان ملفات الـ Routes التي تحتوي على تعليقات Swagger
-  apis: [
-    path.join(__dirname, '../../modules/**/*.route.ts'),
-    process.env.NODE_ENV === 'production' ? './dist/**/*.routes.js' : './src/**/*.routes.ts'
-  ]
-};
-
-export const swaggerSpec = swaggerJSDoc(options);
+  apis: ['src/modules/**/*.route.ts', 'src/infra/swagger/*.ts']
+});

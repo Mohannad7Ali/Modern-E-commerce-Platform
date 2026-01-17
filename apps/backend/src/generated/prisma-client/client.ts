@@ -52,3 +52,8 @@ export type RefreshToken = Prisma.RefreshTokenModel
  * 
  */
 export type VerificationToken = Prisma.VerificationTokenModel
+/**
+ * Model Category
+ * 
+ */
+export type Category = Prisma.CategoryModel

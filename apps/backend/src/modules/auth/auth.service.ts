@@ -1,7 +1,7 @@
 import { UserRepository } from './repositories/user.repository';
 import { RefreshTokenRepository } from './repositories/refresh-token.repository';
 import { TokenService } from './utils/token.service';
-import { EmailAlreadyExistsError, InvalidCredentialsError, InvalidRefreshTokenError } from './auth.errors';
+import { InvalidRefreshTokenError } from './auth.errors';
 import { hashPassword, verifyPassword } from './utils/password';
 import { Role } from './utils/token.types';
 import { AuthResponse, RegisterUserParams, SignInParams } from './auth.types';
@@ -10,10 +10,7 @@ import BadRequestError from '@/shared/errors/BadRequestError';
 import { verificationTokenRepository } from './repositories/verificationToken.repository';
 import { VERIFICATION_TYPE } from '@/generated/prisma-client/client';
 export class AuthService {
-  constructor(
-    private userRepository: UserRepository,
-    refreshTokenRepository: RefreshTokenRepository
-  ) {}
+  constructor(private userRepository: UserRepository) {}
 
   // this function issue access and refresh tokens and store hashed refresh token in database
   private static async issueTokens(userId: string, role: Role) {
@@ -27,7 +24,7 @@ export class AuthService {
     return { accessToken, refreshToken: token };
   }
   //this function register new user
-  static async registerUser({ name, email, password, role }: RegisterUserParams): Promise<AuthResponse> {
+  static async registerUser({ name, email, password }: RegisterUserParams): Promise<AuthResponse> {
     const existingUser = await UserRepository.findUserByEmail(email);
     if (existingUser) {
       throw new AppError(409, 'This email already exists, please log in instead.');

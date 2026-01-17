@@ -21,7 +21,7 @@ export const createServer = async function createServer() {
     res.json({ status: 'ok' });
   });
 
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
   app.use('/api', configureRoute());
   app.use(errorMiddleware);
