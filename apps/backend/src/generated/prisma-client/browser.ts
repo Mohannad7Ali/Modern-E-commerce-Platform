@@ -37,3 +37,8 @@ export type VerificationToken = Prisma.VerificationTokenModel
  * 
  */
 export type Category = Prisma.CategoryModel
+/**
+ * Model Product
+ * 
+ */
+export type Product = Prisma.ProductModel

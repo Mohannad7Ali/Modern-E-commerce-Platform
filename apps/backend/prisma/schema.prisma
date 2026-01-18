@@ -90,19 +90,7 @@ model VerificationToken {
 
   @@index([userId, type])
 }
-model Category {
-  id          String              @id @default(uuid())
-  slug        String              @unique
-  name        String
-  description String?
-  images      String[]
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt 
 
-  // relations
-  products    Product[]
-  // attributes  CategoryAttribute[]
-}
 model Product {
   id            String           @id @default(uuid())
   name          String           @unique
@@ -115,16 +103,103 @@ model Product {
   isBestSeller  Boolean          @default(false)
   averageRating Float            @default(0)
   reviewCount   Int              @default(0)
-
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  //relation 
-  categoryId    String?
   category      Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-
-  // variants      ProductVariant[]
+  categoryId    String?
+  variants      ProductVariant[]
   // interactions  Interaction[]
   // reviews       Review[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
 
   @@index([name, slug])
+}
+
+model ProductVariant {
+  id                String                    @id @default(uuid())
+  productId         String
+  product           Product                   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku               String                    @unique
+  images            String[]                  @default([])
+  price             Float
+  stock             Int
+  lowStockThreshold Int                       @default(10)
+  barcode           String?
+  warehouseLocation String?
+  attributes        ProductVariantAttribute[]
+  // orderItems        OrderItem[]
+  // cartItems         CartItem[]
+  // stockMovements    StockMovement[]
+  // restocks          Restock[]
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+
+  @@index([productId, sku])
+}
+
+model Attribute {
+  id                String                    @id @default(uuid())
+  name              String                    @unique
+  slug              String                    @unique
+  values            AttributeValue[]
+  categories        CategoryAttribute[]
+  variantAttributes ProductVariantAttribute[]
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+
+  @@index([name, slug])
+}
+
+model AttributeValue {
+  id                String                    @id @default(uuid())
+  attributeId       String
+  attribute         Attribute                 @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+  value             String
+  slug              String                    @unique
+  variantAttributes ProductVariantAttribute[]
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+
+  @@index([attributeId, value])
+}
+
+model ProductVariantAttribute {
+  id          String         @id @default(uuid())
+  variantId   String
+  variant     ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  attributeId String
+  attribute   Attribute      @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+  valueId     String
+  value       AttributeValue @relation(fields: [valueId], references: [id], onDelete: Cascade)
+  createdAt   DateTime       @default(now())
+
+  @@unique([variantId, attributeId, valueId])
+  @@index([variantId, attributeId])
+}
+
+model Category {
+  id          String              @id @default(uuid())
+  slug        String              @unique
+  name        String
+  description String?
+  images      String[]
+  products    Product[]
+  attributes  CategoryAttribute[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  @@index([name, slug])
+}
+
+model CategoryAttribute {
+  id          String    @id @default(uuid())
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  attributeId String
+  attribute   Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+  isRequired  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([categoryId, attributeId])
+  @@index([categoryId, attributeId])
 }

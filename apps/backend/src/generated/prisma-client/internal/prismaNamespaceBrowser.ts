@@ -54,7 +54,8 @@ export const ModelName = {
   User: 'User',
   RefreshToken: 'RefreshToken',
   VerificationToken: 'VerificationToken',
-  Category: 'Category'
+  Category: 'Category',
+  Product: 'Product'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -130,6 +131,27 @@ export const CategoryScalarFieldEnum = {
 } as const
 
 export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
+
+
+export const ProductScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  images: 'images',
+  slug: 'slug',
+  salesCount: 'salesCount',
+  isNew: 'isNew',
+  isFeatured: 'isFeatured',
+  isTrending: 'isTrending',
+  isBestSeller: 'isBestSeller',
+  averageRating: 'averageRating',
+  reviewCount: 'reviewCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  categoryId: 'categoryId'
+} as const
+
+export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
 
 
 export const SortOrder = {

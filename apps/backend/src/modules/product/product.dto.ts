@@ -1,76 +1,78 @@
-import {
-  IsArray,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Min,
-} from "class-validator";
+// modules/product/product.dto.ts
+
+import { IsString, IsOptional, IsBoolean, IsUUID, IsNotEmpty, IsArray } from 'class-validator';
 
 export class CreateProductDto {
-  @IsNotEmpty({ message: "Name is required" })
-  @IsString({ message: "Name must be a string" })
+  @IsNotEmpty()
+  @IsString()
   name!: string;
 
-  @IsNotEmpty({ message: "Description is required" })
-  @IsString({ message: "Description must be a string" })
-  description!: string;
-
-  @IsNotEmpty({ message: "Price is required" })
-  @IsNumber({}, { message: "Price must be a number" })
-  @Min(0, { message: "Price cannot be negative" })
-  price!: number;
+  @IsString()
+  slug!: string;
 
   @IsOptional()
-  @IsNumber({}, { message: "Discount must be a number" })
-  @Min(0, { message: "Discount cannot be negative" })
-  discount?: number;
+  @IsString()
+  description?: string;
 
-  @IsNotEmpty({ message: "Images are required" })
-  @IsArray({ message: "Images must be an array" })
-  @IsString({ each: true, message: "Each image must be a string" })
-  images!: string[];
+  @IsArray()
+  @IsString({ each: true })
+  images?: string[];
 
-  @IsNotEmpty({ message: "Stock is required" })
-  @IsNumber({}, { message: "Stock must be a number" })
-  @Min(0, { message: "Stock cannot be negative" })
-  stock!: number;
+  @IsOptional()
+  @IsUUID()
+  categoryId?: string;
 
-  @IsNotEmpty({ message: "Category ID is required" })
-  @IsString({ message: "Category ID must be a string" })
-  categoryId!: string;
+  @IsOptional()
+  @IsBoolean()
+  isNew?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isFeatured?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isTrending?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isBestSeller?: boolean;
 }
 
 export class UpdateProductDto {
   @IsOptional()
-  @IsString({ message: "Name must be a string" })
+  @IsString()
   name?: string;
 
   @IsOptional()
-  @IsString({ message: "Description must be a string" })
+  @IsString()
+  slug?: string;
+
+  @IsOptional()
+  @IsString()
   description?: string;
 
-  @IsOptional()
-  @IsNumber({}, { message: "Price must be a number" })
-  @Min(0, { message: "Price cannot be negative" })
-  price?: number;
-
-  @IsOptional()
-  @IsNumber({}, { message: "Discount must be a number" })
-  @Min(0, { message: "Discount cannot be negative" })
-  discount?: number;
-
-  @IsOptional()
-  @IsArray({ message: "Images must be an array" })
-  @IsString({ each: true, message: "Each image must be a string" })
+  @IsArray()
+  @IsString({ each: true })
   images?: string[];
 
   @IsOptional()
-  @IsNumber({}, { message: "Stock must be a number" })
-  @Min(0, { message: "Stock cannot be negative" })
-  stock?: number;
+  @IsUUID()
+  categoryId?: string;
 
   @IsOptional()
-  @IsString({ message: "Category ID must be a string" })
-  categoryId?: string;
+  @IsBoolean()
+  isNew?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isFeatured?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isTrending?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isBestSeller?: boolean;
 }
