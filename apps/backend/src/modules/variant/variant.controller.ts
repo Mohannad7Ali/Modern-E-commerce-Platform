@@ -4,6 +4,7 @@ import { CheckParamsType } from '@/shared/utils/checkType';
 import sendResponse from '@/shared/utils/sendResponse';
 import { Request, Response, NextFunction } from 'express';
 import AppError from '@/shared/errors/AppError';
+import { uploadToCloudinary } from '@/shared/utils/uploadToCloudinary';
 export class VariantController {
   constructor(private readonly variantService: VariantService) {}
   getAllVariants = asyncHandler(async (req: Request, res: Response): Promise<void> => {
@@ -56,8 +57,13 @@ export class VariantController {
     } catch (error) {
       throw new AppError(400, 'Invalid attributes format');
     }
-    //TODO: Make file upload
-    const imageUrls = [''];
+    console.log('req.files: ', req.files);
+    const files = req.files as Express.Multer.File[];
+    let imageUrls: string[] = [];
+    if (Array.isArray(files) && files.length > 0) {
+      const uploadedImages = await uploadToCloudinary(files);
+      imageUrls = uploadedImages.map(img => img.url).filter(Boolean);
+    }
 
     const variant = await this.variantService.createVariant({
       productId,

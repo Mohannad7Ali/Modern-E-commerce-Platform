@@ -1,6 +1,7 @@
 import { makeVariantController } from './variant.factory';
 import { Router } from 'express';
 import { requireAuth } from '../auth/middlewares/require-auth';
+import { upload } from '@/shared/middlewares/upload.middleware';
 const router = Router();
 const controller = makeVariantController();
 /**
@@ -153,8 +154,8 @@ router.get('/sku/:sku', controller.getVariantBySku);
  *       400:
  *         description: Invalid input
  */
-
-router.post('/', controller.createVariant);
+// 'images' must match the key name you use in Postman
+router.post('/', upload.array('images', 5), controller.createVariant);
 
 /**
  * @swagger
@@ -194,7 +195,7 @@ router.post('/', controller.createVariant);
  *         description: Variant not found
  */
 
-router.patch('/:id', controller.updateVariant);
+router.patch('/:id', upload.array('images', 5), controller.updateVariant);
 // router.post('/:id/restock', requireAuth, controller.restockVariant);
 
 /**

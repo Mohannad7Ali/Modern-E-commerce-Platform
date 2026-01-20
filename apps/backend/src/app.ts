@@ -7,6 +7,8 @@ import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './infra/swagger/swagger.config';
 import { configureRoute } from './routes';
+import { upload } from '@/shared/middlewares/upload.middleware';
+import { uploadToCloudinary } from './shared/utils/uploadToCloudinary';
 dotenv.config();
 
 export const createServer = async function createServer() {
@@ -22,7 +24,16 @@ export const createServer = async function createServer() {
   });
 
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
+  app.post('/testCloudinary', upload.array('images', 5), async (req, res) => {
+    console.log('req.files: ', req.files);
+    const files = req.files as Express.Multer.File[];
+    let imageUrls: string[] = [];
+    if (Array.isArray(files) && files.length > 0) {
+      const uploadedImages = await uploadToCloudinary(files);
+      imageUrls = uploadedImages.map(img => img.url).filter(Boolean);
+    }
+    res.json({ imageUrls }).status(200);
+  });
   app.use('/api', configureRoute());
   app.use(errorMiddleware);
   return { app, httpServer };
