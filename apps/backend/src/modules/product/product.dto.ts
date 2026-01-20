@@ -1,78 +1,82 @@
-// modules/product/product.dto.ts
-
-import { IsString, IsOptional, IsBoolean, IsUUID, IsNotEmpty, IsArray } from 'class-validator';
+import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export class CreateProductDto {
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: 'Name is required' })
+  @IsString({ message: 'Name must be a string' })
   name!: string;
 
-  @IsString()
+  @IsNotEmpty({ message: 'slug is required' })
+  @IsString({ message: 'slug must be a string' })
   slug!: string;
 
-  @IsOptional()
-  @IsString()
-  description?: string;
+  @IsNotEmpty({ message: 'Description is required' })
+  @IsString({ message: 'Description must be a string' })
+  description!: string;
 
-  @IsArray()
-  @IsString({ each: true })
-  images?: string[];
-
-  @IsOptional()
-  @IsUUID()
-  categoryId?: string;
+  @IsNotEmpty({ message: 'Price is required' })
+  @IsNumber({}, { message: 'Price must be a number' })
+  @Min(0, { message: 'Price cannot be negative' })
+  price!: number;
 
   @IsOptional()
-  @IsBoolean()
-  isNew?: boolean;
+  @IsNumber({}, { message: 'Discount must be a number' })
+  @Min(0, { message: 'Discount cannot be negative' })
+  discount?: number;
 
-  @IsOptional()
-  @IsBoolean()
-  isFeatured?: boolean;
+  @IsNotEmpty({ message: 'Images are required' })
+  @IsArray({ message: 'Images must be an array' })
+  @IsString({ each: true, message: 'Each image must be a string' })
+  images!: string[];
 
-  @IsOptional()
-  @IsBoolean()
-  isTrending?: boolean;
+  @IsNotEmpty({ message: 'Stock is required' })
+  @IsNumber({}, { message: 'Stock must be a number' })
+  @Min(0, { message: 'Stock cannot be negative' })
+  stock!: number;
 
-  @IsOptional()
-  @IsBoolean()
-  isBestSeller?: boolean;
+  @IsNotEmpty({ message: 'Category ID is required' })
+  @IsString({ message: 'Category ID must be a string' })
+  categoryId!: string;
+
+  @IsBoolean({ message: 'must be boolean' })
+  isNew!: boolean;
+  @IsBoolean({ message: 'must be boolean' })
+  isFeatured!: boolean;
+  @IsBoolean({ message: 'must be boolean' })
+  isTrending!: boolean;
+  @IsBoolean({ message: 'must be boolean' })
+  isBestSeller!: boolean;
 }
 
 export class UpdateProductDto {
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Name must be a string' })
   name?: string;
 
   @IsOptional()
-  @IsString()
-  slug?: string;
-
-  @IsOptional()
-  @IsString()
+  @IsString({ message: 'Description must be a string' })
   description?: string;
 
-  @IsArray()
-  @IsString({ each: true })
+  @IsOptional()
+  @IsNumber({}, { message: 'Price must be a number' })
+  @Min(0, { message: 'Price cannot be negative' })
+  price?: number;
+
+  @IsOptional()
+  @IsNumber({}, { message: 'Discount must be a number' })
+  @Min(0, { message: 'Discount cannot be negative' })
+  discount?: number;
+
+  @IsOptional()
+  @IsArray({ message: 'Images must be an array' })
+  @IsString({ each: true, message: 'Each image must be a string' })
   images?: string[];
 
   @IsOptional()
-  @IsUUID()
+  @IsNumber({}, { message: 'Stock must be a number' })
+  @Min(0, { message: 'Stock cannot be negative' })
+  stock?: number;
+
+  @IsOptional()
+  @IsString({ message: 'Category ID must be a string' })
   categoryId?: string;
-
-  @IsOptional()
-  @IsBoolean()
-  isNew?: boolean;
-
-  @IsOptional()
-  @IsBoolean()
-  isFeatured?: boolean;
-
-  @IsOptional()
-  @IsBoolean()
-  isTrending?: boolean;
-
-  @IsOptional()
-  @IsBoolean()
-  isBestSeller?: boolean;
 }

@@ -8,7 +8,6 @@ export class ProductRepository {
         name: product.name,
         slug: product.slug,
         description: product.description,
-        images: product.images,
         categoryId: product.categoryId,
         isNew: product.isNew ?? false,
         isFeatured: product.isFeatured ?? false,
@@ -30,7 +29,7 @@ export class ProductRepository {
     });
   }
 
-  findById(id: string) {
+  static findById(id: string) {
     return prisma.product.findUnique({
       where: { id }
     });

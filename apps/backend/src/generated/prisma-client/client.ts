@@ -53,12 +53,37 @@ export type RefreshToken = Prisma.RefreshTokenModel
  */
 export type VerificationToken = Prisma.VerificationTokenModel
 /**
+ * Model Product
+ * 
+ */
+export type Product = Prisma.ProductModel
+/**
+ * Model ProductVariant
+ * 
+ */
+export type ProductVariant = Prisma.ProductVariantModel
+/**
+ * Model Attribute
+ * 
+ */
+export type Attribute = Prisma.AttributeModel
+/**
+ * Model AttributeValue
+ * 
+ */
+export type AttributeValue = Prisma.AttributeValueModel
+/**
+ * Model ProductVariantAttribute
+ * 
+ */
+export type ProductVariantAttribute = Prisma.ProductVariantAttributeModel
+/**
  * Model Category
  * 
  */
 export type Category = Prisma.CategoryModel
 /**
- * Model Product
+ * Model CategoryAttribute
  * 
  */
-export type Product = Prisma.ProductModel
+export type CategoryAttribute = Prisma.CategoryAttributeModel
