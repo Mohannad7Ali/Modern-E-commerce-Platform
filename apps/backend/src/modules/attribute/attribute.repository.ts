@@ -32,12 +32,44 @@ export class AttributeRepository {
       include: { values: true }
     });
   }
+  async findAttributeByName(name: string) {
+    return prisma.attribute.findUnique({
+      where: { name },
+      include: { values: true }
+    });
+  }
 
   async findAttributeValueById(id: string) {
     return prisma.attributeValue.findUnique({
       where: { id },
       include: { attribute: true }
     });
+  }
+  async findValueInAttribute(attributeId: string, value: string) {
+    return prisma.attributeValue.findFirst({
+      where: { attributeId, value },
+      include: { attribute: true }
+    });
+  }
+  async checkCategoryAssignment(categoryId: string, attributeId: string) {
+    return prisma.categoryAttribute.findFirst({
+      where: { attributeId, categoryId },
+      include: { attribute: true }
+    });
+  }
+  async isAttributeInUse(attributeId: string) {
+    const usedInCategory = prisma.categoryAttribute.findFirst({
+      where: { attributeId },
+      include: { attribute: true }
+    });
+    const usedInVarint = prisma.productVariantAttribute.findFirst({
+      where: { attributeId },
+      include: { attribute: true }
+    });
+    if (!usedInCategory && !usedInVarint) {
+      return false;
+    }
+    return true;
   }
 
   async deleteAttribute(id: string) {
