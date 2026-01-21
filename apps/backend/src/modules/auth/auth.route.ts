@@ -3,147 +3,196 @@ import { AuthController } from './auth.controller';
 import { requireAuth } from './middlewares/require-auth';
 import { validateDto } from '@/shared/middlewares/validateDto';
 import { ForgotPasswordDto, RegisterDto, ResetPasswordDto, SigninDto } from './auth.dto';
+
 const router = Router();
+
 /**
  * @swagger
- * /sign-up:
- *   post:
- *     summary: User sign-up
- *     description: Allows a new user to register by providing necessary details.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *                 description: User's email address.
- *               password:
- *                 type: string
- *                 description: User's password.
- *               fullName:
- *                 type: string
- *                 description: User's full name.
- *     responses:
- *       201:
- *         description: User successfully created.
+ * tags:
+ *   name: Auth
+ *   description: Authentication & authorization endpoints
  */
 
-router.post('/sign-up', validateDto(RegisterDto), AuthController.signup);
 /**
  * @swagger
- * /sign-in:
+ * /auth/sign-up:
  *   post:
- *     summary: User sign-in
- *     description: Allows an existing user to sign in using their credentials.
+ *     summary: User sign-up
+ *     tags: [Auth]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *               - fullName
  *             properties:
  *               email:
  *                 type: string
- *                 description: User's email address.
+ *                 format: email
+ *                 example: user@example.com
  *               password:
  *                 type: string
- *                 description: User's password.
+ *                 example: Secret123!
+ *               fullName:
+ *                 type: string
+ *                 example: John Doe
  *     responses:
- *       200:
- *         description: User successfully signed in.
+ *       201:
+ *         description: User successfully created
+ *       400:
+ *         description: Validation error
  */
-router.post('/sign-in', validateDto(SigninDto), AuthController.signin);
+router.post('/sign-up', validateDto(RegisterDto), AuthController.signup);
+
 /**
  * @swagger
- * /refresh-token:
+ * /auth/sign-in:
  *   post:
- *     summary: Refresh authentication token
- *     description: Allows a user to refresh their authentication token when it expires.
+ *     summary: User sign-in
+ *     tags: [Auth]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 example: Secret123!
+ *     responses:
+ *       200:
+ *         description: User successfully signed in
+ *       401:
+ *         description: Invalid credentials
+ */
+router.post('/sign-in', validateDto(SigninDto), AuthController.signin);
+
+/**
+ * @swagger
+ * /auth/refresh:
+ *   post:
+ *     summary: Refresh access token
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - refreshToken
  *             properties:
  *               refreshToken:
  *                 type: string
- *                 description: Refresh token to obtain a new access token.
+ *                 example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
  *     responses:
  *       200:
- *         description: Successfully refreshed the token.
+ *         description: Token refreshed successfully
+ *       401:
+ *         description: Invalid refresh token
  */
 router.post('/refresh', AuthController.refresh);
+
 /**
  * @swagger
- * /sign-out:
+ * /auth/sign-out:
  *   post:
  *     summary: User sign-out
- *     description: Logs the user out of the application by invalidating their session.
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: User successfully signed out.
+ *         description: User successfully signed out
+ *       401:
+ *         description: Unauthorized
  */
 router.post('/sign-out', requireAuth, AuthController.signout);
-router.get('/me', requireAuth, AuthController.me);
+
 /**
  * @swagger
- * /forgot-password:
+ * /auth/me:
+ *   get:
+ *     summary: Get current authenticated user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Authenticated user fetched successfully
+ *       401:
+ *         description: Unauthorized
+ */
+router.get('/me', requireAuth, AuthController.me);
+
+/**
+ * @swagger
+ * /auth/forgot-password:
  *   post:
  *     summary: Request password reset
- *     description: Sends a 10-minute expiration token to the user's email if it exists in the database.
  *     tags: [Auth]
  *     requestBody:
- *     required: true
- *     content:
- *     application/json:
- *     schema:
- *     type: object
- *     required:
- *     - email
- *     properties:
- *     email:
- *     type: string
- *     example: user@example.com
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@example.com
  *     responses:
- *     200:
- *     description: Reset email sent successfully.
- *     404:
- *     description: User not found.
+ *       200:
+ *         description: Reset email sent successfully
+ *       404:
+ *         description: User not found
  */
 router.post('/forgot-password', validateDto(ForgotPasswordDto), AuthController.forgotPassword);
+
 /**
  * @swagger
- * /reset-password:
- * post:
- * summary: Reset password using token
- * description: Verifies the token from the verification table and updates the user's password.
- * tags: [Auth]
- * requestBody:
- * required: true
- * content:
- * application/json:
- * schema:
- * type: object
- * required:
- * - token
- * - newPassword
- * properties:
- * token:
- * type: string
- * description: The random token received via email.
- * newPassword:
- * type: string
- * minLength: 6
- * example: "Secret123!"
- * responses:
- * 200:
- * description: Password updated and verification token cleared.
- * 400:
- * description: Invalid or expired token.
+ * /auth/reset-password:
+ *   post:
+ *     summary: Reset password using token
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - token
+ *               - newPassword
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 description: Token received via email
+ *                 example: 9f1c2b7a9e
+ *               newPassword:
+ *                 type: string
+ *                 minLength: 6
+ *                 example: Secret123!
+ *     responses:
+ *       200:
+ *         description: Password updated successfully
+ *       400:
+ *         description: Invalid or expired token
  */
 router.post('/reset-password', validateDto(ResetPasswordDto), AuthController.resetPassword);
 
