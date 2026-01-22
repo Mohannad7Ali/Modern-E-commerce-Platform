@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { UserRepository } from './repositories/user.repository';
 import { requireAuth } from './middlewares/require-auth';
 import { validateDto } from '@/shared/middlewares/validateDto';
 import { ForgotPasswordDto, RegisterDto, ResetPasswordDto, SigninDto } from './auth.dto';
 
 const router = Router();
-
+const authController = new AuthController(new AuthService(new UserRepository()));
 /**
  * @swagger
  * tags:
@@ -46,7 +48,7 @@ const router = Router();
  *       400:
  *         description: Validation error
  */
-router.post('/sign-up', validateDto(RegisterDto), AuthController.signup);
+router.post('/sign-up', validateDto(RegisterDto), authController.signup);
 
 /**
  * @swagger
@@ -77,7 +79,7 @@ router.post('/sign-up', validateDto(RegisterDto), AuthController.signup);
  *       401:
  *         description: Invalid credentials
  */
-router.post('/sign-in', validateDto(SigninDto), AuthController.signin);
+router.post('/sign-in', validateDto(SigninDto), authController.signin);
 
 /**
  * @swagger
@@ -103,7 +105,7 @@ router.post('/sign-in', validateDto(SigninDto), AuthController.signin);
  *       401:
  *         description: Invalid refresh token
  */
-router.post('/refresh', AuthController.refresh);
+router.post('/refresh', authController.refresh);
 
 /**
  * @swagger
@@ -119,7 +121,7 @@ router.post('/refresh', AuthController.refresh);
  *       401:
  *         description: Unauthorized
  */
-router.post('/sign-out', requireAuth, AuthController.signout);
+router.post('/sign-out', requireAuth, authController.signout);
 
 /**
  * @swagger
@@ -135,7 +137,7 @@ router.post('/sign-out', requireAuth, AuthController.signout);
  *       401:
  *         description: Unauthorized
  */
-router.get('/me', requireAuth, AuthController.me);
+router.get('/me', requireAuth, authController.me);
 
 /**
  * @swagger
@@ -162,7 +164,7 @@ router.get('/me', requireAuth, AuthController.me);
  *       404:
  *         description: User not found
  */
-router.post('/forgot-password', validateDto(ForgotPasswordDto), AuthController.forgotPassword);
+router.post('/forgot-password', validateDto(ForgotPasswordDto), authController.forgotPassword);
 
 /**
  * @swagger
@@ -194,6 +196,6 @@ router.post('/forgot-password', validateDto(ForgotPasswordDto), AuthController.f
  *       400:
  *         description: Invalid or expired token
  */
-router.post('/reset-password', validateDto(ResetPasswordDto), AuthController.resetPassword);
+router.post('/reset-password', validateDto(ResetPasswordDto), authController.resetPassword);
 
 export default router;

@@ -87,3 +87,8 @@ export type Category = Prisma.CategoryModel
  * 
  */
 export type CategoryAttribute = Prisma.CategoryAttributeModel
+/**
+ * Model Log
+ * 
+ */
+export type Log = Prisma.LogModel

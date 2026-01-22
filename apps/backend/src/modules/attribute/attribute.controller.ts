@@ -3,16 +3,18 @@ import sendResponse from '@/shared/utils/sendResponse';
 import asyncHandler from '@/shared/utils/asyncHandler';
 import { Request, Response } from 'express';
 import { CheckParamsType } from '@/shared/utils/checkType';
+import { makeLogsService } from '../logs/logs.factory';
 export default class AttributeController {
+  private logsService = makeLogsService();
   constructor(private readonly attrService: AttributeService) {}
   createAttribute = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const { name } = req.body;
     const attribute = await this.attrService.createAttribute(name);
     sendResponse(res, 201, { data: { attribute }, message: 'Attribute created successfully' });
-    // this.logsService.info('Attribute created', {
-    //   userId: req.user?.id,
-    //   sessionId: req.session.id
-    // });
+    this.logsService.info('Attribute created', {
+      userId: req.user?.id,
+      sessionId: req.session.id
+    });
   });
   createAttributeValue = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const { attributeId, value } = req.body;
@@ -24,10 +26,10 @@ export default class AttributeController {
       data: { attributeValue },
       message: 'Attribute value created successfully'
     });
-    // this.logsService.info('Attribute value created', {
-    //   userId: req.user?.id,
-    //   sessionId: req.session.id
-    // });
+    this.logsService.info('Attribute value created', {
+      userId: req.user?.id,
+      sessionId: req.session.id
+    });
   });
   assignAttributeToCategory = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const { categoryId, attributeId, isRequired } = req.body;
@@ -40,10 +42,10 @@ export default class AttributeController {
       data: { result },
       message: 'Attribute assigned to category successfully'
     });
-    // this.logsService.info('Attribute assigned to category', {
-    //   userId: req.user?.id,
-    //   sessionId: req.session.id
-    // });
+    this.logsService.info('Attribute assigned to category', {
+      userId: req.user?.id,
+      sessionId: req.session.id
+    });
   });
   getAllAttributes = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const attributes = await this.attrService.findManyAttributes(req.query);
@@ -67,10 +69,10 @@ export default class AttributeController {
     console.log('icoming id => ', id);
     await this.attrService.deleteAttribute(id);
     sendResponse(res, 200, { message: 'Attribute deleted successfully' });
-    // this.logsService.info('Attribute deleted', {
-    //   userId: req.user?.id,
-    //   sessionId: req.session.id
-    // });
+    this.logsService.info('Attribute deleted', {
+      userId: req.user?.id,
+      sessionId: req.session.id
+    });
   });
 
   deleteAttributeValue = asyncHandler(async (req: Request, res: Response): Promise<void> => {
@@ -80,9 +82,9 @@ export default class AttributeController {
     sendResponse(res, 200, {
       message: 'Attribute value deleted successfully'
     });
-    // this.logsService.info('Attribute value deleted', {
-    //   userId: req.user?.id,
-    //   sessionId: req.session.id
-    // });
+    this.logsService.info('Attribute value deleted', {
+      userId: req.user?.id,
+      sessionId: req.session.id
+    });
   });
 }

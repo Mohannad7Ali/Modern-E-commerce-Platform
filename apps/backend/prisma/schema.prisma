@@ -203,3 +203,10 @@ model CategoryAttribute {
   @@unique([categoryId, attributeId])
   @@index([categoryId, attributeId])
 }
+model Log {
+  id        String   @id @default(uuid())
+  level     String
+  message   String
+  context   Json?
+  createdAt DateTime @default(now())
+}
