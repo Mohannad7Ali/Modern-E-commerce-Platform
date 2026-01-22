@@ -1,173 +1,114 @@
-import { Router } from 'express';
-import { CategoryRepository } from './category.repository';
-import { CategoryService } from './category.service';
-import { CategoryController } from './category.controller';
-import { requireAuth } from '@/shared/middlewares/protect.middleware';
-import { validateDto } from '@/shared/middlewares/validateDto';
+import express from 'express';
 import { requireRole } from '@/shared/middlewares/requireRole';
+import { requireAuth } from '@/shared/middlewares/protect.middleware';
+import { makeCategoryController } from './category.factory';
+import { upload } from '@/shared/middlewares/upload.middleware';
+import { validateDto } from '@/shared/middlewares/validateDto';
 import { CreateCategoryDTO, UpdateCategoryDTO } from './category.dto';
-const router = Router();
-const repository = new CategoryRepository();
-const service = new CategoryService(repository);
-const controller = new CategoryController(service);
+const router = express.Router();
+const categoryController = makeCategoryController();
 
 /**
  * @swagger
- * tags:
- *   name: Categories
- *   description: Category management and public catalog access
- */
-
-/**
- * @swagger
- * /api/categories:
+ * /categories:
  *   get:
  *     summary: Get all categories
- *     description: Public endpoint to retrieve all product categories
- *     tags: [Categories]
+ *     description: Retrieves a list of all categories available in the platform.
  *     responses:
  *       200:
- *         description: List of categories
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Category'
+ *         description: A list of categories.
  */
-router.get('/', controller.getAll);
+router.get('/', categoryController.getAllCategories);
 
 /**
  * @swagger
- * /api/categories/{slug}:
+ * /categories/{id}:
  *   get:
- *     summary: Get category by slug
- *     description: Public endpoint to retrieve a single category by its slug
- *     tags: [Categories]
+ *     summary: Get category by ID
+ *     description: Retrieves details of a specific category by its ID.
  *     parameters:
  *       - in: path
- *         name: slug
+ *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: Category slug
+ *         description: The ID of the category to retrieve.
  *     responses:
  *       200:
- *         description: Category found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Category'
+ *         description: Category details.
  *       404:
- *         description: Category not found
+ *         description: Category not found.
  */
-router.get('/:slug', controller.getBySlug);
+router.get('/:id', categoryController.getCategory);
 
 /**
  * @swagger
- * /api/categories/admin:
+ * /categories:
  *   post:
  *     summary: Create a new category
- *     description: Admin-only endpoint to create a category
- *     tags: [Categories]
+ *     description: Creates a new category for the platform (Admin only).
  *     security:
- *       - cookieAuth: []
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/CreateCategoryInput'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
  *     responses:
  *       201:
- *         description: Category created successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Category'
+ *         description: Category created successfully.
+ *       400:
+ *         description: Invalid input data.
  *       401:
- *         description: Unauthorized
+ *         description: Unauthorized. Token is invalid or missing.
  *       403:
- *         description: Forbidden
+ *         description: Forbidden. User does not have the required role.
  */
 router.post(
-  '/admin',
+  '/',
   requireAuth,
   requireRole('ADMIN', 'SUPERADMIN'),
+  upload.array('images', 5),
   validateDto(CreateCategoryDTO),
-  controller.create
+  categoryController.createCategory
 );
 
 /**
  * @swagger
- * /api/categories/admin/{id}:
- *   patch:
- *     summary: Update a category
- *     description: Admin-only endpoint to update a category
- *     tags: [Categories]
- *     security:
- *       - cookieAuth: []
+ * /categories/{id}:
+ *   delete:
+ *     summary: Delete category by ID
+ *     description: Deletes a specific category by its ID (Admin only).
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: Category ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/UpdateCategoryInput'
+ *         description: The ID of the category to delete.
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Category updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Category'
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden
+ *         description: Category deleted successfully.
  *       404:
- *         description: Category not found
- */
-router.patch(
-  '/admin/:id',
-  requireAuth,
-  requireRole('ADMIN', 'SUPERADMIN'),
-  validateDto(UpdateCategoryDTO),
-  controller.update
-);
-
-/**
- * @swagger
- * /api/categories/admin/{id}:
- *   delete:
- *     summary: Delete a category
- *     description: Admin-only endpoint to delete a category
- *     tags: [Categories]
- *     security:
- *       - cookieAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Category ID
- *     responses:
- *       204:
- *         description: Category deleted successfully
+ *         description: Category not found.
  *       401:
- *         description: Unauthorized
+ *         description: Unauthorized. Token is invalid or missing.
  *       403:
- *         description: Forbidden
- *       404:
- *         description: Category not found
+ *         description: Forbidden. User does not have the required role.
  */
-router.delete('/admin/:id', requireAuth, requireRole('ADMIN', 'SUPERADMIN'), controller.delete);
+router.delete('/:id', requireAuth, requireRole('ADMIN', 'SUPERADMIN'), categoryController.deleteCategory);
 
 export default router;

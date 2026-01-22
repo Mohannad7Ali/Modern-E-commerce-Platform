@@ -16,11 +16,6 @@ export class AuthController {
 
     const { user, accessToken, refreshToken } = await this.authService.registerUser({ name, email, password, role });
     const start = Date.now();
-    await this.logsService.createLog({
-      userId: user.id,
-      action: 'SIGNUP',
-      details: `User registered with email: ${email}`
-    });
 
     this.setTokens(res, accessToken, refreshToken);
 
@@ -75,6 +70,7 @@ export class AuthController {
   signout = asyncHandler(async (req: Request, res: Response) => {
     const refreshToken = req.cookies?.refreshToken;
     const userId = req.user?.id;
+    const start = Date.now();
     if (refreshToken) {
       await this.authService.signout(refreshToken);
     }
@@ -85,7 +81,7 @@ export class AuthController {
     this.logsService.info('Sign out', {
       userId,
       sessionId: req.session.id,
-      timePeriod: end - start
+      timePeriod: Date.now() - start
     });
   });
 
@@ -97,7 +93,7 @@ export class AuthController {
   forgotPassword = asyncHandler(async (req: Request, res: Response) => {
     const { email } = req.body;
     const userId = req.user?.id;
-
+    const start = Date.now();
     await this.authService.forgotPasswordService(email);
 
     sendResponse(res, 200, {
@@ -106,20 +102,21 @@ export class AuthController {
     this.logsService.info('Forgot Password', {
       userId,
       sessionId: req.session.id,
-      timePeriod: end - start
+      timePeriod: Date.now() - start
     });
   });
 
   resetPassword = asyncHandler(async (req: Request, res: Response) => {
     const { token, newPassword } = req.body;
-
+    const userId = req.user?.id;
+    const start = Date.now();
     await this.authService.resetPasswordService(token, newPassword);
 
     sendResponse(res, 200, { message: 'Password reset successfully' });
     this.logsService.info('Reset Password', {
       userId,
       sessionId: req.session.id,
-      timePeriod: end - start
+      timePeriod: Date.now() - start
     });
   });
 

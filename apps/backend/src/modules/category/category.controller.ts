@@ -1,43 +1,75 @@
-// modules/category/category.controller.ts
-
 import { Request, Response } from 'express';
+import asyncHandler from '@/shared/utils/asyncHandler';
+import sendResponse from '@/shared/utils/sendResponse';
+import { makeLogsService } from '../logs/logs.factory';
+import { uploadToCloudinary } from '@/shared/utils/uploadToCloudinary';
+// import slugify from '@/shared/utils/slugify';
 import { CategoryService } from './category.service';
-import slugify from '@/shared/utils/slugify';
+import { CheckParamsType } from '@/shared/utils/checkType';
 
 export class CategoryController {
+  private logsService = makeLogsService();
   constructor(private categoryService: CategoryService) {}
-  create = async (req: Request, res: Response): Promise<void> => {
-    const category = await this.categoryService.createCategory(req.body);
-    res.status(201).json(category);
-  };
-  getAll = async (_req: Request, res: Response) => {
-    const categories = await this.categoryService.getCategories();
-    res.json(categories);
-  };
-  getBySlug = async (req: Request, res: Response) => {
-    const { slug } = req.params;
 
-    if (typeof slug !== 'string') {
-      return res.status(400).json({ message: 'Invalid slug format' });
+  getAllCategories = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const categories = await this.categoryService.getAllCategories(req.query);
+    sendResponse(res, 200, {
+      data: { categories },
+      message: 'Categories fetched successfully'
+    });
+  });
+
+  getCategory = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const categoryId = CheckParamsType(req.params.id);
+    const category = await this.categoryService.getCategory(categoryId);
+    sendResponse(res, 200, {
+      data: { category },
+      message: 'Category fetched successfully'
+    });
+  });
+
+  createCategory = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const { name, description } = req.body;
+    // const slugifiedName = slugify(name);
+    const start = Date.now();
+    const files = req.files as Express.Multer.File[];
+
+    let imageUrls: string[] = [];
+    if (Array.isArray(files) && files.length > 0) {
+      const uploadedImages = await uploadToCloudinary(files);
+      imageUrls = uploadedImages.map(img => img.url).filter(Boolean);
     }
-    const Slug = slugify(slug);
-    const category = await this.categoryService.getCategoryBySlug(Slug);
-    res.json(category);
-  };
-  update = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    if (typeof id !== 'string') {
-      return res.status(400).json({ message: 'Invalid id format' });
-    }
-    const category = await this.categoryService.updateCategory(id, req.body);
-    res.json(category);
-  };
-  delete = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    if (typeof id !== 'string') {
-      return res.status(400).json({ message: 'Invalid slug format' });
-    }
-    await this.categoryService.deleteCategory(id);
-    res.status(204).json({ message: 'deleted successfully' });
-  };
+
+    const { category } = await this.categoryService.createCategory({
+      name,
+      description,
+      images: imageUrls.length > 0 ? imageUrls : undefined
+    });
+    sendResponse(res, 201, {
+      data: { category },
+      message: 'Category created successfully'
+    });
+
+    const end = Date.now();
+
+    this.logsService.info('Category created', {
+      userId: req.user?.id,
+      sessionId: req.session.id,
+      timePeriod: end - start
+    });
+  });
+
+  deleteCategory = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const categoryId = CheckParamsType(req.params.id);
+    await this.categoryService.deleteCategory(categoryId);
+    sendResponse(res, 204, { message: 'Category deleted successfully' });
+    const start = Date.now();
+    const end = Date.now();
+
+    this.logsService.info('Category deleted', {
+      userId: req.user?.id,
+      sessionId: req.session.id,
+      timePeriod: end - start
+    });
+  });
 }
