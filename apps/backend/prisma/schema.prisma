@@ -52,7 +52,7 @@ model User {
   verificationTokens          VerificationToken[]
   // orders                      Order[]
   // payments                    Payment[]
-  // addresses                   Address[]
+  addresses                   Address[]
   // interactions                Interaction[]
   // reports                     Report[]
   // reviews                     Review[]
@@ -90,7 +90,22 @@ model VerificationToken {
 
   @@index([userId, type])
 }
+model Address {
+  id        String   @id @default(uuid())
+  city      String
+  state     String
+  country   String
+  zip       String
+  street    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  // order     Order?   @relation("OrderAddress", fields: [orderId], references: [id], onDelete: SetNull)
+  orderId   String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  @@index([userId, orderId])
+}
 model Product {
   id            String           @id @default(uuid())
   name          String           @unique

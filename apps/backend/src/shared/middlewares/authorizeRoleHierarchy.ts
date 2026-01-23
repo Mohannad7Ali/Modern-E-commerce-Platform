@@ -48,6 +48,7 @@ const authorizeRoleHierarchy = (minRequiredRole: string) => {
 
       next();
     } catch (error) {
+      console.log(error);
       return next(new AppError(500, 'Internal server error'));
     }
   };

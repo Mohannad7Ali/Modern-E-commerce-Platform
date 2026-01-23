@@ -53,6 +53,11 @@ export type RefreshToken = Prisma.RefreshTokenModel
  */
 export type VerificationToken = Prisma.VerificationTokenModel
 /**
+ * Model Address
+ * 
+ */
+export type Address = Prisma.AddressModel
+/**
  * Model Product
  * 
  */

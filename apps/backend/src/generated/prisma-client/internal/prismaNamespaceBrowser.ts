@@ -54,6 +54,7 @@ export const ModelName = {
   User: 'User',
   RefreshToken: 'RefreshToken',
   VerificationToken: 'VerificationToken',
+  Address: 'Address',
   Product: 'Product',
   ProductVariant: 'ProductVariant',
   Attribute: 'Attribute',
@@ -124,6 +125,22 @@ export const VerificationTokenScalarFieldEnum = {
 } as const
 
 export type VerificationTokenScalarFieldEnum = (typeof VerificationTokenScalarFieldEnum)[keyof typeof VerificationTokenScalarFieldEnum]
+
+
+export const AddressScalarFieldEnum = {
+  id: 'id',
+  city: 'city',
+  state: 'state',
+  country: 'country',
+  zip: 'zip',
+  street: 'street',
+  userId: 'userId',
+  orderId: 'orderId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AddressScalarFieldEnum = (typeof AddressScalarFieldEnum)[keyof typeof AddressScalarFieldEnum]
 
 
 export const ProductScalarFieldEnum = {
