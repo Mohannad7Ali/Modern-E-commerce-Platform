@@ -1,8 +1,8 @@
-import { ProductRepository } from "./product.repository";
-import { ProductService } from "./product.service";
-import { ProductController } from "./product.controller";
-import { AttributeRepository } from "../attribute/attribute.repository";
-import { VariantRepository } from "../variant/variant.repository";
+import { ProductRepository } from './product.repository';
+import { ProductService } from './product.service';
+import { ProductController } from './product.controller';
+import { AttributeRepository } from '../attribute/attribute.repository';
+import { VariantRepository } from '../variant/variant.repository';
 
 export const makeProductController = () => {
   const productRepository = new ProductRepository();

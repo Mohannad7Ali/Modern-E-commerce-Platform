@@ -1,22 +1,17 @@
 import express from 'express';
-
-import { requireAuth } from '@/shared/middlewares/protect.middleware';
 import { requireRole } from '@/shared/middlewares/requireRole';
-import { ProductController } from './product.controller';
-import { ProductRepository } from './product.repository';
-import { ProductService } from './product.service';
-import { CreateProductDto, UpdateProductDto } from './product.dto';
-import { validateDto } from '@/shared/middlewares/validateDto';
+import { requireAuth } from '@/shared/middlewares/protect.middleware';
+import { makeProductController } from './product.factory';
+import { upload } from '@/shared/middlewares/upload.middleware';
 
 const router = express.Router();
-const repo = new ProductRepository();
-const service = new ProductService(repo);
-const productController = new ProductController(service);
+const productController = makeProductController();
+
 /**
  * @swagger
  * tags:
- *   name: Products
- *   description: Product catalog management
+ *   name: Product
+ *   description: Product  catalog management
  */
 /**
  * @swagger
@@ -28,7 +23,7 @@ const productController = new ProductController(service);
  *       200:
  *         description: A list of products.
  */
-router.get('/', productController.getAll);
+router.get('/', productController.getAllProducts);
 
 /**
  * @swagger
@@ -49,7 +44,7 @@ router.get('/', productController.getAll);
  *       404:
  *         description: Product not found.
  */
-router.get('/:id', productController.getById);
+router.get('/:id', productController.getProductById);
 
 /**
  * @swagger
@@ -70,7 +65,7 @@ router.get('/:id', productController.getById);
  *       404:
  *         description: Product not found.
  */
-router.get('/:slug', productController.getBySlug);
+router.get('/slug/:slug', productController.getProductBySlug);
 
 /**
  * @swagger
@@ -113,15 +108,14 @@ router.get('/:slug', productController.getBySlug);
  *       401:
  *         description: Unauthorized. Token is invalid or missing.
  *       403:
- *         description: Forbidden. User d  validateDto(UpdateProductDto),
+ *         description: Forbidden. User does not have the required role.
  */
 router.put(
-  '/admin/:id',
-  validateDto(UpdateProductDto),
+  '/:id',
   requireAuth,
   requireRole('ADMIN', 'SUPERADMIN'),
-  // upload.array('images', 10),
-  productController.update
+  upload.array('images', 10),
+  productController.updateProduct
 );
 
 /**
@@ -160,13 +154,7 @@ router.put(
  *       403:
  *         description: Forbidden. User does not have the required role.
  */
-router.post(
-  '/',
-  validateDto(CreateProductDto),
-  requireAuth,
-  requireRole('ADMIN', 'SUPERADMIN'),
-  productController.create
-);
+router.post('/', requireAuth, requireRole('ADMIN', 'SUPERADMIN'), upload.any(), productController.createProduct);
 
 /**
  * @swagger
@@ -196,13 +184,13 @@ router.post(
  *       403:
  *         description: Forbidden. User does not have the required role.
  */
-// router.post(
-//   '/bulk',
-//   protect,
-//   authorizeRole('ADMIN', 'SUPERADMIN'),
-//   upload.single('file'),
-//   productController.bulkCreateProducts
-// );
+router.post(
+  '/bulk',
+  requireAuth,
+  requireRole('ADMIN', 'SUPERADMIN'),
+  upload.single('file'),
+  productController.bulkCreateProducts
+);
 
 /**
  * @swagger
@@ -229,6 +217,6 @@ router.post(
  *       403:
  *         description: Forbidden. User does not have the required role.
  */
-router.delete('/:id', requireAuth, requireRole('ADMIN', 'SUPERADMIN'), productController.delete);
+router.delete('/:id', require, requireRole('ADMIN', 'SUPERADMIN'), productController.deleteProduct);
 
 export default router;

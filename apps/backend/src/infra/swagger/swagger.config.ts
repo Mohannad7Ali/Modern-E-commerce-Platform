@@ -24,18 +24,18 @@ and error handling conventions.
 
     servers: [
       {
-        url: '/api',
+        url: 'localhost:7000/api/v1/',
         description: 'API Base URL'
       }
     ],
 
-    tags: [
-      { name: 'Auth', description: 'Authentication & authorization' },
-      { name: 'Attributes', description: 'Product attributes & values' },
-      { name: 'Variants', description: 'Product variants & inventory' },
-      { name: 'Categories', description: 'Product categories' },
-      { name: 'Products', description: 'Product catalog' }
-    ],
+    // tags: [
+    //   { name: 'Auth', description: 'Authentication & authorization' },
+    //   { name: 'Attributes', description: 'Product attributes & values' },
+    //   { name: 'Variants', description: 'Product variants & inventory' },
+    //   { name: 'Categories', description: 'Product categories' },
+    //   { name: 'Products', description: 'Product catalog' }
+    // ],
 
     components: {
       /* =========================
@@ -118,5 +118,5 @@ and error handling conventions.
   /**
    * Paths scanned for Swagger annotations
    */
-  apis: ['src/modules/**/*.routes.ts', 'src/infra/swagger/**/*.ts']
+  apis: ['src/modules/**/*.route.ts', 'src/modules/**/*.routes.ts', 'src/infra/swagger/**/*.ts']
 });

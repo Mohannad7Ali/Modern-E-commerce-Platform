@@ -4,7 +4,7 @@ import { requireAuth } from '@/shared/middlewares/protect.middleware';
 import { makeCategoryController } from './category.factory';
 import { upload } from '@/shared/middlewares/upload.middleware';
 import { validateDto } from '@/shared/middlewares/validateDto';
-import { CreateCategoryDTO, UpdateCategoryDTO } from './category.dto';
+import { CreateCategoryDTO } from './category.dto';
 const router = express.Router();
 const categoryController = makeCategoryController();
 
