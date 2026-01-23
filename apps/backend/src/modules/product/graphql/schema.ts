@@ -1,7 +1,14 @@
-import gql from "graphql-tag";
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import { productResolvers } from "./resolver";
-
+import gql from 'graphql-tag'; // we use it to convert string to gql
+import { makeExecutableSchema } from '@graphql-tools/schema'; //we used it to merge schema (types) with resolver
+import { productResolvers } from './resolver';
+/**
+ * shcema or typedef
+ * it is the catalog that descripe the available data that we have
+ * start with gql
+ * type : descripe object shape
+ * query : descripe operation that get data
+ * Mutation : descripe changes (CRUD) operation
+ */
 const typeDefs = gql`
   scalar DateTime
 
@@ -105,5 +112,5 @@ const typeDefs = gql`
 
 export const productSchema = makeExecutableSchema({
   typeDefs: typeDefs,
-  resolvers: productResolvers,
+  resolvers: productResolvers
 });
