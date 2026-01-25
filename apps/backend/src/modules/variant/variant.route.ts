@@ -7,7 +7,7 @@ const controller = makeVariantController();
 /**
  * @swagger
  * tags:
- *   name: Product Variant
+ *   name: Variants
  *   description: Product Variant catalog management
  */
 

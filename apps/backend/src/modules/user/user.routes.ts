@@ -20,6 +20,7 @@ const userController = makeUserController();
  * @swagger
  * /users/me:
  *   get:
+ *     tags: [User]
  *     summary: Get the authenticated user's profile
  *     description: Retrieves the profile of the authenticated user.
  *     security:
@@ -36,6 +37,7 @@ router.get('/me', requireAuth, userController.getMe);
  * @swagger
  * /users/admin:
  *   post:
+ *     tags: [User]
  *     summary: Create a new admin
  *     description: Creates a new admin user (SuperAdmin only).
  *     security:
@@ -72,6 +74,7 @@ router.post('/admin', requireAuth, requireRole('SUPERADMIN'), validateDto(Create
  * @swagger
  * /users:
  *   get:
+ *     tags: [User]
  *     summary: Get all users
  *     description: Retrieves a list of all users (Admin or SuperAdmin only).
  *     security:
@@ -90,6 +93,7 @@ router.get('/', userController.getAllUsers);
  * @swagger
  * /users/{id}:
  *   get:
+ *     tags: [User]
  *     summary: Get a user by ID
  *     description: Retrieves a user by their ID (Admin or SuperAdmin only).
  *     parameters:
@@ -117,6 +121,7 @@ router.get('/:id', requireAuth, requireRole('ADMIN', 'SUPERADMIN'), validateDto(
  * @swagger
  * /users/email/{email}:
  *   get:
+ *     tags: [User]
  *     summary: Get a user by email
  *     description: Retrieves a user by their email (Admin or SuperAdmin only).
  *     parameters:
@@ -150,6 +155,7 @@ router.get(
  * @swagger
  * /users/{id}:
  *   put:
+ *     tags: [User]
  *     summary: Update the authenticated user's profile
  *     description: Updates the profile of the authenticated user.
  *     parameters:
@@ -188,6 +194,7 @@ router.put(
  * @swagger
  * /users/{id}:
  *   delete:
+ *     tags: [User]
  *     summary: Delete a user
  *     description: Deletes a user by their ID (Admin or SuperAdmin only).
  *     parameters:

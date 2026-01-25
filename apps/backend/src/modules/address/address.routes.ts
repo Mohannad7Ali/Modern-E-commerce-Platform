@@ -4,11 +4,18 @@ import { makeAddressController } from './address.factory';
 
 const router = express.Router();
 const addressController = makeAddressController();
+/**
+ * @swagger
+ * tags:
+ *   name: Address
+ *   description: User Address
+ */
 
 /**
  * @swagger
  * /addresses:
  *   get:
+ *     tags: [Address]
  *     summary: Get all user addresses
  *     description: Retrieves a list of all addresses associated with the authenticated user.
  *     security:
@@ -25,6 +32,7 @@ router.get('/', requireAuth, addressController.getUserAddresses);
  * @swagger
  * /addresses/{id}:
  *   get:
+ *     tags: [Address]
  *     summary: Get address details
  *     description: Retrieves detailed information about a specific address for the authenticated user.
  *     parameters:
@@ -50,6 +58,7 @@ router.get('/:id', requireAuth, addressController.getAddressDetails);
  * @swagger
  * /addresses/{id}:
  *   delete:
+ *     tags: [Address]
  *     summary: Delete an address
  *     description: Deletes the specified address for the authenticated user.
  *     parameters:

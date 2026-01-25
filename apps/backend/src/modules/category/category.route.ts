@@ -7,11 +7,18 @@ import { validateDto } from '@/shared/middlewares/validateDto';
 import { CreateCategoryDTO } from './category.dto';
 const router = express.Router();
 const categoryController = makeCategoryController();
+/**
+ * @swagger
+ * tags:
+ *   name: Categroies
+ *   description: Product's categories
+ */
 
 /**
  * @swagger
  * /categories:
  *   get:
+ *     tags: [Categroies]
  *     summary: Get all categories
  *     description: Retrieves a list of all categories available in the platform.
  *     responses:
@@ -24,6 +31,7 @@ router.get('/', categoryController.getAllCategories);
  * @swagger
  * /categories/{id}:
  *   get:
+ *     tags: [Categroies]
  *     summary: Get category by ID
  *     description: Retrieves details of a specific category by its ID.
  *     parameters:
@@ -45,6 +53,7 @@ router.get('/:id', categoryController.getCategory);
  * @swagger
  * /categories:
  *   post:
+ *     tags: [Categroies]
  *     summary: Create a new category
  *     description: Creates a new category for the platform (Admin only).
  *     security:
@@ -88,6 +97,7 @@ router.post(
  * @swagger
  * /categories/{id}:
  *   delete:
+ *     tags: [Categroies]
  *     summary: Delete category by ID
  *     description: Deletes a specific category by its ID (Admin only).
  *     parameters:

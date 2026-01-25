@@ -34,7 +34,8 @@ and error handling conventions.
     //   { name: 'Attributes', description: 'Product attributes & values' },
     //   { name: 'Variants', description: 'Product variants & inventory' },
     //   { name: 'Categories', description: 'Product categories' },
-    //   { name: 'Products', description: 'Product catalog' }
+    //   { name: 'Products', description: 'Product catalog' },
+    //   { name: 'Address', description: 'User Address' }
     // ],
 
     components: {

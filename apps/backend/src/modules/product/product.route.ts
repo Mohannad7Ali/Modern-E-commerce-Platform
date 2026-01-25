@@ -10,13 +10,14 @@ const productController = makeProductController();
 /**
  * @swagger
  * tags:
- *   name: Product
- *   description: Product  catalog management
+ *   name: Products
+ *   description: Product catalog
  */
 /**
  * @swagger
  * /products:
  *   get:
+ *     tags: [Products]
  *     summary: Get all products
  *     description: Retrieves a list of all products.
  *     responses:
@@ -31,6 +32,7 @@ router.get('/', productController.getAllProducts);
  *   get:
  *     summary: Get product by ID
  *     description: Retrieves a specific product by its ID.
+ *     tags: [Products]
  *     parameters:
  *       - in: path
  *         name: id
@@ -50,6 +52,7 @@ router.get('/:id', productController.getProductById);
  * @swagger
  * /products/slug/{slug}:
  *   get:
+ *     tags: [Products]
  *     summary: Get product by slug
  *     description: Retrieves a specific product by its slug.
  *     parameters:
@@ -71,6 +74,7 @@ router.get('/slug/:slug', productController.getProductBySlug);
  * @swagger
  * /products/{id}:
  *   put:
+ *     tags: [Products]
  *     summary: Update product
  *     description: Updates a specific product by its ID (Admin only).
  *     parameters:
@@ -122,6 +126,7 @@ router.put(
  * @swagger
  * /products:
  *   post:
+ *     tags: [Products]
  *     summary: Create new product
  *     description: Creates a new product (Admin only).
  *     security:
@@ -160,6 +165,7 @@ router.post('/', requireAuth, requireRole('ADMIN', 'SUPERADMIN'), upload.any(), 
  * @swagger
  * /products/bulk:
  *   post:
+ *     tags: [Products]
  *     summary: Bulk create products
  *     description: Bulk creates multiple products via file upload (Admin only).
  *     security:
@@ -196,6 +202,7 @@ router.post(
  * @swagger
  * /products/{id}:
  *   delete:
+ *     tags: [Products]
  *     summary: Delete product
  *     description: Deletes a specific product by its ID (Admin only).
  *     parameters:
