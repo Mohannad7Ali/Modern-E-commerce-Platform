@@ -2,7 +2,7 @@
 // import { expressMiddleware } from '@apollo/server/express4';
 // import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import express from 'express';
-
+import { logRequest } from '@/shared/middlewares/logRequest';
 import dotenv from 'dotenv';
 import { Server as HTTPServer } from 'http';
 import { errorMiddleware } from './shared/middlewares/error.middleware';
@@ -42,6 +42,9 @@ export const createServer = async function createServer() {
     res.json({ imageUrls }).status(200);
   });
   app.use('/api', configureRoute());
+  // Error and Logging
   app.use(errorMiddleware);
+  app.use(logRequest);
+
   return { app, httpServer };
 };
