@@ -12,6 +12,7 @@ import { swaggerSpec } from './infra/swagger/swagger.config';
 import { configureRoute } from './routes';
 import { upload } from '@/shared/middlewares/upload.middleware';
 import { uploadToCloudinary } from './shared/utils/uploadToCloudinary';
+import cors from 'cors';
 dotenv.config();
 
 export const createServer = async function createServer() {
@@ -21,6 +22,25 @@ export const createServer = async function createServer() {
   //await db connection
   const httpServer = new HTTPServer(app);
 
+  // Preflight handler removed to avoid conflicts
+
+  // CORS must be applied BEFORE GraphQL setup
+  app.use(
+    cors({
+      origin:
+        process.env.NODE_ENV === 'production'
+          ? ['https://ecommerce.vercel.app']
+          : ['http://localhost:3000', 'http://localhost:5173'],
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'X-Requested-With',
+        'Apollo-Require-Preflight' // For GraphQL
+      ]
+    })
+  );
   // Example health check
   app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
