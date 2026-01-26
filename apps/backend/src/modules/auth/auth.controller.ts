@@ -40,7 +40,7 @@ export class AuthController {
 
     this.logsService.info('Sign in', {
       userId: user.id,
-      sessionId: req.session.id,
+      sessionId: req.session?.id || 'no session',
       timePeriod: Date.now() - start
     });
 

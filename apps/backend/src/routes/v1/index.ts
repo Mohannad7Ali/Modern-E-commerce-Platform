@@ -6,6 +6,7 @@ import categoryRoutes from '@/modules/category/category.route';
 import productRoutes from '@/modules/product/product.route';
 import variantRoutes from '@/modules/variant/variant.route';
 import attributeRoutes from '@/modules/attribute/attribute.route';
+import cartRoutes from '@/modules/cart/cart.routes';
 import { Router } from 'express';
 
 export const ConfigureV1Routes = () => {
@@ -19,5 +20,6 @@ export const ConfigureV1Routes = () => {
   router.use('/products', productRoutes);
   router.use('/variants', variantRoutes);
   router.use('/attributes', attributeRoutes);
+  router.use('/cart', cartRoutes);
   return router;
 };

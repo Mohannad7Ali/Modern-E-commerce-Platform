@@ -24,7 +24,7 @@ and error handling conventions.
 
     servers: [
       {
-        url: 'localhost:7000/api/v1/',
+        url: '/api/v1/',
         description: 'API Base URL'
       }
     ],

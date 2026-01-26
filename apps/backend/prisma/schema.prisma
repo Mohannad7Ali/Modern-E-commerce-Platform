@@ -29,6 +29,11 @@ enum VERIFICATION_TYPE {
   EMAIL_VERIFY
   PASSWORD_RESET
 }
+enum CART_STATUS {
+  ACTIVE
+  ABANDONED
+  CONVERTED
+}
 
 model User {
   id                          String        @id @default(uuid())
@@ -56,8 +61,8 @@ model User {
   // interactions                Interaction[]
   // reports                     Report[]
   // reviews                     Review[]
-  // carts                       Cart[]
-  // cartEvents                  CartEvent[]
+  carts                       Cart[]
+  cartEvents                  CartEvent[]
   // chats                       Chat[]        @relation("UserChats")
   // messages                    ChatMessage[]
 
@@ -142,7 +147,7 @@ model ProductVariant {
   warehouseLocation String?
   attributes        ProductVariantAttribute[]
   // orderItems        OrderItem[]
-  // cartItems         CartItem[]
+  cartItems         CartItem[]
   // stockMovements    StockMovement[]
   // restocks          Restock[]
   createdAt         DateTime                  @default(now())
@@ -224,4 +229,49 @@ model Log {
   message   String
   context   Json?
   createdAt DateTime @default(now())
+}
+model Cart {
+  id         String      @id @default(uuid())
+  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId     String?
+  sessionId  String?     @unique
+  cartItems  CartItem[]
+  cartEvents CartEvent[]
+  status     CART_STATUS @default(ACTIVE)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@index([userId, sessionId])
+}
+model CartItem {
+  id        String         @id @default(uuid())
+  cart      Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cartId    String
+  variantId String
+  variant   ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  quantity  Int            @default(1)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@unique([cartId, variantId])
+  @@index([cartId, variantId])
+}
+
+enum CART_EVENT {
+  PENDING
+  ADD
+  CHECKOUT_STARTED
+  CHECKOUT_COMPLETED
+}
+
+model CartEvent {
+  id        String     @id @default(uuid())
+  cartId    String
+  userId    String?
+  sessionId String?
+  eventType CART_EVENT @default(PENDING)
+  timestamp DateTime   @default(now())
+  cart      Cart       @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  user      User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt DateTime   @default(now())
 }
