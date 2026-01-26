@@ -47,12 +47,13 @@ export class AuthService {
     return { user: { ...user }, ...tokens } as AuthResponse;
   }
   // this function refresh tokens using refresh token
-  async refreshTokens(oldRefreshToken: string) {
+  async refreshTokens(oldRefreshToken: string, role: Role) {
     const tokenHash = TokenService.hashRefreshToken(oldRefreshToken);
     const storedToken = await RefreshTokenRepository.findValid(tokenHash);
     if (!storedToken) throw new InvalidRefreshTokenError();
     await RefreshTokenRepository.revoke(storedToken.id);
-    const tokens = await this.issueTokens(storedToken.userId, 'USER');
+
+    const tokens = await this.issueTokens(storedToken.userId, role);
     return { ...tokens };
   }
   // this function logout user by revoking refresh token

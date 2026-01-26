@@ -59,8 +59,17 @@ export class ProductController {
     // Log for debugging
     console.log('req.body:', JSON.stringify(req.body, null, 2), 'req.files:', req.files);
 
+    let variants = rawVariants || [];
+    // إذا كانت البيانات قادمة من form-data كـ string
+    if (typeof variants === 'string') {
+      try {
+        variants = JSON.parse(variants);
+      } catch (e) {
+        throw new AppError(400, 'Invalid variants format');
+      }
+    }
     // Validate variants
-    const variants = rawVariants || [];
+
     if (!Array.isArray(variants) || variants.length === 0) {
       throw new AppError(400, 'At least one variant is required');
     }

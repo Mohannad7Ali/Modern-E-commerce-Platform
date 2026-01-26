@@ -224,6 +224,6 @@ router.post(
  *       403:
  *         description: Forbidden. User does not have the required role.
  */
-router.delete('/:id', require, requireRole('ADMIN', 'SUPERADMIN'), productController.deleteProduct);
+router.delete('/:id', requireAuth, requireRole('ADMIN', 'SUPERADMIN'), productController.deleteProduct);
 
 export default router;

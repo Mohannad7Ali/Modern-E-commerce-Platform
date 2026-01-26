@@ -27,6 +27,10 @@ export const createServer = async function createServer() {
   });
 
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.get('/swagger.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+  });
   app.post('/testCloudinary', upload.array('images', 5), async (req, res) => {
     console.log('req.files: ', req.files);
     const files = req.files as Express.Multer.File[];

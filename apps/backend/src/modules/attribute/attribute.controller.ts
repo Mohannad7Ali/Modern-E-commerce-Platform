@@ -9,7 +9,7 @@ export default class AttributeController {
   constructor(private readonly attrService: AttributeService) {}
   createAttribute = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const { name } = req.body;
-    const attribute = await this.attrService.createAttribute(name);
+    const attribute = await this.attrService.createAttribute({ name });
     sendResponse(res, 201, { data: { attribute }, message: 'Attribute created successfully' });
     this.logsService.info('Attribute created', {
       userId: req.user?.id,

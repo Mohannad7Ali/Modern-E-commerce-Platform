@@ -6,9 +6,16 @@ const logsController = makeLogsController();
 
 /**
  * @swagger
+ * tags:
+ *   name: Logs
+ *   description: manage logs
+ */
+/**
+ * @swagger
  * /logs:
  *   get:
  *     summary: Get logs
+ *     tags: [Logs]
  *     description: Retrieves a list of logs from the system.
  *     responses:
  *       200:
@@ -23,6 +30,7 @@ router.get('/', logsController.getLogs);
  * /logs/{id}:
  *   get:
  *     summary: Get log details by ID
+ *     tags: [Logs]
  *     description: Retrieves detailed information about a specific log by its ID.
  *     parameters:
  *       - in: path
@@ -44,6 +52,7 @@ router.get('/:id', logsController.getLogById);
  * /logs/{level}:
  *   get:
  *     summary: Get logs by level
+ *     tags: [Logs]
  *     description: Retrieves logs filtered by their severity level.
  *     parameters:
  *       - in: path
@@ -64,6 +73,7 @@ router.get('/:level', logsController.getLogByLevel);
  * @swagger
  * /logs/{id}:
  *   delete:
+ *     tags: [Logs]
  *     summary: Delete log by ID
  *     description: Deletes a specific log entry by its ID.
  *     parameters:
@@ -85,6 +95,7 @@ router.delete('/:id', logsController.deleteLog);
  * @swagger
  * /logs:
  *   delete:
+ *     tags: [Logs]
  *     summary: Clear all logs
  *     description: Deletes all logs from the system.
  *     responses:

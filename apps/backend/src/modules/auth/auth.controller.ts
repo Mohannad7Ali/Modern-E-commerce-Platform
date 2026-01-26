@@ -5,7 +5,8 @@ import { cookieOptions } from '@/shared/constants';
 import sendResponse from '@/shared/utils/sendResponse';
 import AppError from '@/shared/errors/AppError';
 import asyncHandler from '@/shared/utils/asyncHandler';
-
+import { Role } from './utils/token.types';
+import { ROLE } from '@/generated/prisma-client/enums';
 export class AuthController {
   private logsService = makeLogsService();
 
@@ -56,11 +57,12 @@ export class AuthController {
 
   refresh = asyncHandler(async (req: Request, res: Response) => {
     const oldRefreshToken = req.cookies?.refreshToken;
+    const role = req.user?.role as Role;
     if (!oldRefreshToken) {
       throw new AppError(401, 'Refresh token is missing');
     }
 
-    const { accessToken, refreshToken } = await this.authService.refreshTokens(oldRefreshToken);
+    const { accessToken, refreshToken } = await this.authService.refreshTokens(oldRefreshToken, role);
 
     this.setTokens(res, accessToken, refreshToken);
 

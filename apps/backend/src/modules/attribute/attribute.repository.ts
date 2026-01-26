@@ -58,18 +58,18 @@ export class AttributeRepository {
     });
   }
   async isAttributeInUse(attributeId: string) {
-    const usedInCategory = prisma.categoryAttribute.findFirst({
+    const usedInCategory = await prisma.categoryAttribute.findFirst({
       where: { attributeId },
       include: { attribute: true }
     });
-    const usedInVarint = prisma.productVariantAttribute.findFirst({
+    const usedInVarint = await prisma.productVariantAttribute.findFirst({
       where: { attributeId },
       include: { attribute: true }
     });
-    if (!usedInCategory && !usedInVarint) {
-      return false;
+    if (usedInCategory || usedInVarint) {
+      return true;
     }
-    return true;
+    return false;
   }
 
   async deleteAttribute(id: string) {
