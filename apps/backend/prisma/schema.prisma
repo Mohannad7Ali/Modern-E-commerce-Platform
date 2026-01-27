@@ -55,7 +55,7 @@ model User {
 
   refreshTokens               RefreshToken[]
   verificationTokens          VerificationToken[]
-  // orders                      Order[]
+  orders                      Order[]
   // payments                    Payment[]
   addresses                   Address[]
   // interactions                Interaction[]
@@ -146,7 +146,7 @@ model ProductVariant {
   barcode           String?
   warehouseLocation String?
   attributes        ProductVariantAttribute[]
-  // orderItems        OrderItem[]
+  orderItems        OrderItem[]
   cartItems         CartItem[]
   // stockMovements    StockMovement[]
   // restocks          Restock[]
@@ -274,4 +274,36 @@ model CartEvent {
   cart      Cart       @relation(fields: [cartId], references: [id], onDelete: Cascade)
   user      User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
   createdAt DateTime   @default(now())
+}
+
+model Order {
+  id          String       @id @default(uuid())
+  userId      String
+  amount      Float
+  orderDate   DateTime     @default(now())
+  status      String       @default("PENDING")
+  user        User         @relation(fields: [userId], references: [id])
+  orderItems  OrderItem[]
+  // payment     Payment?     @relation("OrderPayment")
+  // address     Address?     @relation("OrderAddress")
+  // shipment    Shipment?    @relation("OrderShipment")
+  // transaction Transaction? @relation("OrderTransaction")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id        String         @id @default(uuid())
+  orderId   String
+  variantId String
+  quantity  Int
+  price     Float
+  order     Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variant   ProductVariant @relation(fields: [variantId], references: [id])
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([orderId, variantId])
 }
