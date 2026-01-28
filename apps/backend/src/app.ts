@@ -1,6 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import express, { Application } from 'express';
 import { Server as HTTPServer } from 'http';
-import dotenv from 'dotenv';
+
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
@@ -16,7 +18,6 @@ import { logRequest } from '@/shared/middlewares/logRequest';
 import { upload } from '@/shared/middlewares/upload.middleware';
 import { uploadToCloudinary } from './shared/utils/uploadToCloudinary';
 import helmet from 'helmet';
-dotenv.config();
 
 /**
  * Server Factory Function

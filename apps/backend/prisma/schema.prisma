@@ -34,6 +34,13 @@ enum CART_STATUS {
   ABANDONED
   CONVERTED
 }
+enum CART_EVENT {
+  PENDING
+  ADD
+  CHECKOUT_STARTED
+  CHECKOUT_COMPLETED
+}
+
 enum PAYMENT_STATUS {
   PENDING
   PAID
@@ -42,6 +49,7 @@ enum PAYMENT_STATUS {
   REFUNDED
   PARTIALLY_REFUNDED
 }
+
 
 model User {
   id                          String        @id @default(uuid())
@@ -112,7 +120,7 @@ model Address {
   street    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  // order     Order?   @relation("OrderAddress", fields: [orderId], references: [id], onDelete: SetNull)
+  order     Order?   @relation("OrderAddress", fields: [orderId], references: [id], onDelete: SetNull)
   orderId   String?  @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -265,12 +273,6 @@ model CartItem {
   @@index([cartId, variantId])
 }
 
-enum CART_EVENT {
-  PENDING
-  ADD
-  CHECKOUT_STARTED
-  CHECKOUT_COMPLETED
-}
 
 model CartEvent {
   id        String     @id @default(uuid())
@@ -293,8 +295,8 @@ model Order {
   user        User         @relation(fields: [userId], references: [id])
   orderItems  OrderItem[]
   payment     Payment?     @relation("OrderPayment")
-  // address     Address?     @relation("OrderAddress")
-  // shipment    Shipment?    @relation("OrderShipment")
+  address     Address?     @relation("OrderAddress")
+  shipment    Shipment?    @relation("OrderShipment")
   // transaction Transaction? @relation("OrderTransaction")
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
@@ -328,4 +330,17 @@ model Payment {
   updatedAt DateTime       @updatedAt
 
   @@index([userId, orderId])
+}
+model Shipment {
+  id             String    @id @default(uuid())
+  carrier        String
+  trackingNumber String
+  shippedDate    DateTime
+  deliveryDate   DateTime?
+  order          Order     @relation("OrderShipment", fields: [orderId], references: [id], onDelete: Cascade)
+  orderId        String    @unique
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([orderId])
 }
