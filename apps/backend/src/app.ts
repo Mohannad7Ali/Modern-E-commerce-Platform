@@ -1,34 +1,70 @@
-// import { ApolloServer } from '@apollo/server';
-// import { expressMiddleware } from '@apollo/server/express4';
-// import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import express from 'express';
-import { logRequest } from '@/shared/middlewares/logRequest';
-import dotenv from 'dotenv';
+import express, { Application } from 'express';
 import { Server as HTTPServer } from 'http';
-import { errorMiddleware } from './shared/middlewares/error.middleware';
-import cookieParser from 'cookie-parser';
-import swaggerUi from 'swagger-ui-express';
-import { swaggerSpec } from './infra/swagger/swagger.config';
-import { configureRoute } from './routes';
-import { upload } from '@/shared/middlewares/upload.middleware';
-import { uploadToCloudinary } from './shared/utils/uploadToCloudinary';
+import dotenv from 'dotenv';
 import cors from 'cors';
-import { connectRedis } from '@/infra/cache/redis';
-import redisClient from '@/infra/cache/redis';
+import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { RedisStore } from 'connect-redis';
+import swaggerUi from 'swagger-ui-express';
+
+// Internal Imports
+import redisClient, { connectRedis } from '@/infra/cache/redis';
+import { swaggerSpec } from './infra/swagger/swagger.config';
+import { configureRoute } from './routes';
+import { errorMiddleware } from './shared/middlewares/error.middleware';
+import { logRequest } from '@/shared/middlewares/logRequest';
+import { upload } from '@/shared/middlewares/upload.middleware';
+import { uploadToCloudinary } from './shared/utils/uploadToCloudinary';
+import helmet from 'helmet';
 dotenv.config();
 
-export const createServer = async function createServer() {
-  const app = express();
-  app.use(express.json());
-  app.use(cookieParser());
-  //await db connection
+/**
+ * Server Factory Function
+ * Organizes infrastructure, security, and routing
+ */
+export const createServer = async () => {
+  const app: Application = express();
   const httpServer = new HTTPServer(app);
 
-  // Preflight handler removed to avoid conflicts
+  // 1. Core Infrastructure & Security
+  setupStandardMiddleware(app);
+  setupSecurityMiddleware(app);
 
-  // CORS must be applied BEFORE GraphQL setup
+  // 2. Database & Cache Connections
+  await connectRedis();
+  setupSessionMiddleware(app);
+
+  // 3. Documentation & Special Routes
+  setupDocumentation(app);
+  setupTestRoutes(app);
+
+  // 4. API Routes
+  app.use('/api', configureRoute());
+
+  // 5. Error Handling & Logging (Must be last)
+  setupErrorHandling(app);
+
+  return { app, httpServer };
+};
+
+/**
+ * Basic Express configurations
+ */
+function setupStandardMiddleware(app: Application) {
+  app.use(express.json());
+  app.use(cookieParser());
+
+  // Basic Health Check
+  app.get('/health', (_, res) => res.json({ status: 'ok', timestamp: new Date() }));
+}
+
+/**
+ * CORS Configuration
+ */
+function setupSecurityMiddleware(app: Application) {
+  // Add helmet at the top of security middleware
+  // It sets secure HTTP headers by default
+  app.use(helmet());
   app.use(
     cors({
       origin:
@@ -37,79 +73,65 @@ export const createServer = async function createServer() {
           : ['http://localhost:3000', 'http://localhost:5173'],
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-      allowedHeaders: [
-        'Content-Type',
-        'Authorization',
-        'X-Requested-With',
-        'Apollo-Require-Preflight' // For GraphQL
-      ]
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Apollo-Require-Preflight']
     })
   );
-  // Example health check
-  app.get('/health', (req, res) => {
-    res.json({ status: 'ok' });
-  });
-  //-------------------------------------redis-------------------------------------------------
-  // 1. Establish Redis Connection
-  connectRedis();
+}
 
-  // 2. Configure Session Middleware
+/**
+ * Persistent Session Management with Redis
+ */
+function setupSessionMiddleware(app: Application) {
   app.use(
     session({
-      // Initialize RedisStore with our pre-configured redisClient
       store: new RedisStore({
         client: redisClient,
-        prefix: 'sess:' // Optional: adds a prefix to keys in Redis for organization
+        prefix: 'sess:'
       }),
-
-      // Secret key used to sign the session ID cookie
       secret: process.env.SESSION_SECRET!,
-
-      // Forces the session to be saved back to the session store,
-      // even if the session was never modified during the request.
       resave: false,
-
-      // "true" is useful for tracking anonymous users (e.g., guest shopping carts)
       saveUninitialized: true,
-
-      // Trust the reverse proxy (required for apps deployed on Render/Heroku/Railway)
       proxy: true,
-
       cookie: {
-        httpOnly: true, // Prevents client-side JS from reading the cookie (XSS protection)
-
-        // Cookie is only sent over HTTPS in production
+        httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-
-        // 'none' allows the cookie to be sent in cross-site requests (Frontend <-> Backend)
         sameSite: 'none',
-
-        // Cookie life span: 7 days
-        maxAge: 1000 * 60 * 60 * 24 * 7
+        maxAge: 1000 * 60 * 60 * 24 * 7 // 7 Days
       }
     })
   );
-  //-----------------------------------------------------------------------------------
+}
 
+/**
+ * Swagger Documentation Setup
+ */
+function setupDocumentation(app: Application) {
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-  app.get('/swagger.json', (req, res) => {
+  app.get('/swagger.json', (_, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerSpec);
   });
+}
+
+/**
+ * Temporary/Test Routes (Cloudinary, etc.)
+ */
+function setupTestRoutes(app: Application) {
   app.post('/testCloudinary', upload.array('images', 5), async (req, res) => {
-    console.log('req.files: ', req.files);
     const files = req.files as Express.Multer.File[];
     let imageUrls: string[] = [];
     if (Array.isArray(files) && files.length > 0) {
       const uploadedImages = await uploadToCloudinary(files);
       imageUrls = uploadedImages.map(img => img.url).filter(Boolean);
     }
-    res.json({ imageUrls }).status(200);
+    res.status(200).json({ imageUrls });
   });
-  app.use('/api', configureRoute());
-  // Error and Logging
+}
+
+/**
+ * Global Error Handlers
+ */
+function setupErrorHandling(app: Application) {
   app.use(errorMiddleware);
   app.use(logRequest);
-
-  return { app, httpServer };
-};
+}
