@@ -13,6 +13,10 @@ import { configureRoute } from './routes';
 import { upload } from '@/shared/middlewares/upload.middleware';
 import { uploadToCloudinary } from './shared/utils/uploadToCloudinary';
 import cors from 'cors';
+import { connectRedis } from '@/infra/cache/redis';
+import redisClient from '@/infra/cache/redis';
+import session from 'express-session';
+import { RedisStore } from 'connect-redis';
 dotenv.config();
 
 export const createServer = async function createServer() {
@@ -45,6 +49,47 @@ export const createServer = async function createServer() {
   app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
   });
+  //-------------------------------------redis-------------------------------------------------
+  // 1. Establish Redis Connection
+  connectRedis();
+
+  // 2. Configure Session Middleware
+  app.use(
+    session({
+      // Initialize RedisStore with our pre-configured redisClient
+      store: new RedisStore({
+        client: redisClient,
+        prefix: 'sess:' // Optional: adds a prefix to keys in Redis for organization
+      }),
+
+      // Secret key used to sign the session ID cookie
+      secret: process.env.SESSION_SECRET!,
+
+      // Forces the session to be saved back to the session store,
+      // even if the session was never modified during the request.
+      resave: false,
+
+      // "true" is useful for tracking anonymous users (e.g., guest shopping carts)
+      saveUninitialized: true,
+
+      // Trust the reverse proxy (required for apps deployed on Render/Heroku/Railway)
+      proxy: true,
+
+      cookie: {
+        httpOnly: true, // Prevents client-side JS from reading the cookie (XSS protection)
+
+        // Cookie is only sent over HTTPS in production
+        secure: process.env.NODE_ENV === 'production',
+
+        // 'none' allows the cookie to be sent in cross-site requests (Frontend <-> Backend)
+        sameSite: 'none',
+
+        // Cookie life span: 7 days
+        maxAge: 1000 * 60 * 60 * 24 * 7
+      }
+    })
+  );
+  //-----------------------------------------------------------------------------------
 
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   app.get('/swagger.json', (req, res) => {
