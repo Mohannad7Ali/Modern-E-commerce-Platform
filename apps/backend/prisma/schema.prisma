@@ -34,6 +34,14 @@ enum CART_STATUS {
   ABANDONED
   CONVERTED
 }
+enum PAYMENT_STATUS {
+  PENDING
+  PAID
+  CANCELED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
 
 model User {
   id                          String        @id @default(uuid())
@@ -56,7 +64,7 @@ model User {
   refreshTokens               RefreshToken[]
   verificationTokens          VerificationToken[]
   orders                      Order[]
-  // payments                    Payment[]
+  payments                    Payment[]
   addresses                   Address[]
   // interactions                Interaction[]
   // reports                     Report[]
@@ -284,7 +292,7 @@ model Order {
   status      String       @default("PENDING")
   user        User         @relation(fields: [userId], references: [id])
   orderItems  OrderItem[]
-  // payment     Payment?     @relation("OrderPayment")
+  payment     Payment?     @relation("OrderPayment")
   // address     Address?     @relation("OrderAddress")
   // shipment    Shipment?    @relation("OrderShipment")
   // transaction Transaction? @relation("OrderTransaction")
@@ -306,4 +314,18 @@ model OrderItem {
   updatedAt DateTime       @updatedAt
 
   @@index([orderId, variantId])
+}
+model Payment {
+  id        String         @id @default(uuid())
+  method    String
+  amount    Float
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  order     Order?         @relation("OrderPayment", fields: [orderId], references: [id], onDelete: SetNull)
+  orderId   String?        @unique
+  status    PAYMENT_STATUS @default(PENDING)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([userId, orderId])
 }
