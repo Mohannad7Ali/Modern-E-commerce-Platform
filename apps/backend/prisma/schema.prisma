@@ -50,6 +50,16 @@ enum PAYMENT_STATUS {
   PARTIALLY_REFUNDED
 }
 
+enum TRANSACTION_STATUS {
+  PENDING
+  PROCESSING
+  SHIPPED
+  IN_TRANSIT
+  DELIVERED
+  CANCELED
+  RETURNED
+  REFUNDED
+}
 
 model User {
   id                          String        @id @default(uuid())
@@ -297,7 +307,7 @@ model Order {
   payment     Payment?     @relation("OrderPayment")
   address     Address?     @relation("OrderAddress")
   shipment    Shipment?    @relation("OrderShipment")
-  // transaction Transaction? @relation("OrderTransaction")
+  transaction Transaction? @relation("OrderTransaction")
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
@@ -341,6 +351,17 @@ model Shipment {
   orderId        String    @unique
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+
+  @@index([orderId])
+}
+model Transaction {
+  id              String             @id @default(uuid())
+  order           Order              @relation("OrderTransaction", fields: [orderId], references: [id], onDelete: Cascade)
+  orderId         String             @unique
+  status          TRANSACTION_STATUS @default(PENDING)
+  transactionDate DateTime           @default(now())
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
 
   @@index([orderId])
 }
