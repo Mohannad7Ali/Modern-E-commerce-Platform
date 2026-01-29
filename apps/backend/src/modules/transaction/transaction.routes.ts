@@ -8,8 +8,16 @@ const transactionController = makeTransactionController();
 
 /**
  * @swagger
+ * tags:
+ *   - name: Transactions
+ *     description: Payment Transactions
+ */
+
+/**
+ * @swagger
  * /transactions:
  *   get:
+ *     tags: [Transactions]
  *     summary: Get all transactions
  *     description: Retrieves a list of all transactions (Admin or SuperAdmin only).
  *     security:
@@ -28,6 +36,7 @@ router.get('/', requireAuth, requireRole('ADMIN', 'SUPERADMIN'), transactionCont
  * @swagger
  * /transactions/{id}:
  *   get:
+ *     tags: [Transactions]
  *     summary: Get transaction by ID
  *     description: Retrieves a specific transaction by its ID (Admin or SuperAdmin only).
  *     parameters:
@@ -55,6 +64,7 @@ router.get('/:id', requireAuth, requireRole('ADMIN', 'SUPERADMIN'), transactionC
  * @swagger
  * /transactions/status/{id}:
  *   put:
+ *     tags: [Transactions]
  *     summary: Update transaction status
  *     description: Updates the status of a specific transaction (Admin or SuperAdmin only).
  *     parameters:
@@ -66,6 +76,16 @@ router.get('/:id', requireAuth, requireRole('ADMIN', 'SUPERADMIN'), transactionC
  *         description: The ID of the transaction to update.
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 example: SUCCESS
  *     responses:
  *       200:
  *         description: Transaction status updated successfully.
@@ -89,6 +109,7 @@ router.put(
  * @swagger
  * /transactions/{id}:
  *   delete:
+ *     tags: [Transactions]
  *     summary: Delete transaction by ID
  *     description: Deletes a specific transaction by its ID (Admin or SuperAdmin only).
  *     parameters:

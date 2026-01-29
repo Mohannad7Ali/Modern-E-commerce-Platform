@@ -4,6 +4,7 @@ import addressRoutes from '@/modules/address/address.routes';
 import logRoutes from '@/modules/logs/logs.route';
 import categoryRoutes from '@/modules/category/category.route';
 import productRoutes from '@/modules/product/product.route';
+import ReviewRoutes from '@/modules/review/review.routes';
 import variantRoutes from '@/modules/variant/variant.route';
 import attributeRoutes from '@/modules/attribute/attribute.route';
 import cartRoutes from '@/modules/cart/cart.routes';
@@ -19,6 +20,7 @@ export const ConfigureV1Routes = () => {
   router.use('/logs', logRoutes);
   router.use('/categories', categoryRoutes);
   router.use('/products', productRoutes);
+  router.use('/reviews', ReviewRoutes);
   router.use('/variants', variantRoutes);
   router.use('/attributes', attributeRoutes);
   router.use('/cart', cartRoutes);

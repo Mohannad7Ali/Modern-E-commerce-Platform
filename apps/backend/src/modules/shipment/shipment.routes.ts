@@ -7,8 +7,16 @@ const shipmentController = makeShipmentController();
 
 /**
  * @swagger
+ * tags:
+ *   - name: Shipments
+ *     description: Shipment and delivery operations
+ */
+
+/**
+ * @swagger
  * /shipments:
  *   post:
+ *     tags: [Shipments]
  *     summary: Create a new shipment
  *     description: Creates a new shipment. Authentication is optional.
  *     security:
@@ -19,18 +27,22 @@ const shipmentController = makeShipmentController();
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - destination
+ *               - items
+ *               - shippingMethod
  *             properties:
  *               destination:
  *                 type: string
- *                 description: The destination address for the shipment.
+ *                 example: "Damascus, Syria"
  *               items:
  *                 type: array
  *                 items:
  *                   type: string
- *                   description: List of items to be shipped.
+ *                 example: ["item1", "item2"]
  *               shippingMethod:
  *                 type: string
- *                 description: The shipping method used for the shipment.
+ *                 example: "EXPRESS"
  *     responses:
  *       201:
  *         description: Shipment created successfully.
