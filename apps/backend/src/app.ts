@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { RedisStore } from 'connect-redis';
 import swaggerUi from 'swagger-ui-express';
+import bodyParser from 'body-parser';
 
 // Internal Imports
 import redisClient, { connectRedis } from '@/infra/cache/redis';
@@ -18,6 +19,7 @@ import { logRequest } from '@/shared/middlewares/logRequest';
 import { upload } from '@/shared/middlewares/upload.middleware';
 import { uploadToCloudinary } from './shared/utils/uploadToCloudinary';
 import helmet from 'helmet';
+import webhookRoutes from './modules/webhook/webhook.routes';
 
 /**
  * Server Factory Function
@@ -26,6 +28,8 @@ import helmet from 'helmet';
 export const createServer = async () => {
   const app: Application = express();
   const httpServer = new HTTPServer(app);
+  // 0. setup webhook routes
+  setupWebhookRoutes(app);
 
   // 1. Core Infrastructure & Security
   setupStandardMiddleware(app);
@@ -135,4 +139,10 @@ function setupTestRoutes(app: Application) {
 function setupErrorHandling(app: Application) {
   app.use(errorMiddleware);
   app.use(logRequest);
+}
+
+//webhook
+function setupWebhookRoutes(app: Application) {
+  // Basic
+  app.use('/api/v1/webhook', bodyParser.raw({ type: 'application/json' }), webhookRoutes);
 }
