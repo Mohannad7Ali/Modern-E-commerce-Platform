@@ -1,10 +1,8 @@
 import { AllAnalytics } from '@/modules/analytics/analytics.types';
-import { AllReports, SalesReport, UserRetentionReport } from '@/modules/reports/reports.types';
+import { AllReports } from '@/modules/reports/reports.types';
 import ExcelJS from 'exceljs';
 
-export default async function generateXLSX(
-  data: AllReports | AllAnalytics | SalesReport | UserRetentionReport
-): Promise<Buffer> {
+export default async function generateXLSX(data: any): Promise<Buffer> {
   const workbook = new ExcelJS.Workbook();
 
   if ('sales' in data && 'userRetention' in data) {

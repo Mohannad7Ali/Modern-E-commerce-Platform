@@ -1,10 +1,8 @@
 import { AllAnalytics } from '@/modules/analytics/analytics.types';
-import { AllReports, SalesReport, UserRetentionReport } from '@/modules/reports/reports.types';
+import { AllReports } from '@/modules/reports/reports.types';
 import PDFDocument from 'pdfkit';
 
-export default function generatePDF(
-  data: AllReports | AllAnalytics | SalesReport | UserRetentionReport
-): Promise<Buffer> {
+export default function generatePDF(data: any): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ margin: 50 });
     const buffers: Buffer[] = [];
