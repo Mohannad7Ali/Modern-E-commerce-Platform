@@ -72,6 +72,7 @@ export default class WebhookService {
           id: fullSession.id,
           userId,
           amount,
+          status: 'PAID',
           orderItems: {
             create: cart.cartItems.map(item => ({
               variantId: item.variant.id,

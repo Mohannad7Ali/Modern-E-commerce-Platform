@@ -84,8 +84,8 @@ model User {
   orders                      Order[]
   payments                    Payment[]
   addresses                   Address[]
-  // interactions                Interaction[]
-  // reports                     Report[]
+  interactions                Interaction[]
+  reports                     Report[]
   reviews                     Review[]
   carts                       Cart[]
   cartEvents                  CartEvent[]
@@ -152,7 +152,7 @@ model Product {
   category      Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   categoryId    String?
   variants      ProductVariant[]
-  // interactions  Interaction[]
+  interactions  Interaction[]
   reviews       Review[]
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
@@ -377,4 +377,28 @@ model Review {
   updatedAt DateTime @updatedAt
 
   @@index([productId, userId])
+}
+model Report {
+  id         String   @id @default(uuid())
+  type       String
+  format     String
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  parameters Json
+  filePath   String?
+
+  @@index([userId, createdAt])
+}
+model Interaction {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  sessionId String?
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  type      String
+  createdAt DateTime @default(now())
+
+  @@index([userId, sessionId, productId])
 }
