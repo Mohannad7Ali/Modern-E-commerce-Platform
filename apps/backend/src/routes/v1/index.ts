@@ -10,9 +10,11 @@ import attributeRoutes from '@/modules/attribute/attribute.route';
 import cartRoutes from '@/modules/cart/cart.routes';
 import orderRoutes from '@/modules/order/order.routes';
 import analyticsRoutes from '@/modules/analytics/analytics.routes';
+import { configureChatRoutes } from '@/modules/chat/chat.route';
 import { Router } from 'express';
+import { Server as WebsocketServer } from 'socket.io';
 
-export const ConfigureV1Routes = () => {
+export const ConfigureV1Routes = (io: WebsocketServer) => {
   const router = Router();
   router.use('/auth', authRoutes);
   router.use('/user', userRoutes);
@@ -27,5 +29,6 @@ export const ConfigureV1Routes = () => {
   router.use('/cart', cartRoutes);
   router.use('/orders', orderRoutes);
   router.use('/analytics', analyticsRoutes);
+  router.use('/chat', configureChatRoutes(io));
   return router;
 };

@@ -89,8 +89,8 @@ model User {
   reviews                     Review[]
   carts                       Cart[]
   cartEvents                  CartEvent[]
-  // chats                       Chat[]        @relation("UserChats")
-  // messages                    ChatMessage[]
+  chats                       Chat[]        @relation("UserChats")
+  messages                    ChatMessage[]
 
   // Restock                     Restock[]
 
@@ -422,4 +422,33 @@ model Section {
   primaryColor   String?
   secondaryColor String?
   @@index([type])
+}
+enum CHAT_STATUS {
+  OPEN
+  RESOLVED
+}
+model Chat {
+  id        String        @id @default(uuid())
+  userId    String
+  user      User          @relation("UserChats", fields: [userId], references: [id], onDelete: Cascade)
+  status    CHAT_STATUS   @default(OPEN)
+  messages  ChatMessage[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([userId])
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  senderId  String
+  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  content   String?
+  type      String   @default("TEXT")
+  url       String?
+  createdAt DateTime @default(now())
+
+  @@index([chatId, senderId])
 }

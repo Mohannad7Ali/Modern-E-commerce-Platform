@@ -20,6 +20,7 @@ import { upload } from '@/shared/middlewares/upload.middleware';
 import { uploadToCloudinary } from './shared/utils/uploadToCloudinary';
 import helmet from 'helmet';
 import webhookRoutes from './modules/webhook/webhook.routes';
+import { SocketManager } from '@/infra/socket/socket';
 
 /**
  * Server Factory Function
@@ -28,6 +29,10 @@ import webhookRoutes from './modules/webhook/webhook.routes';
 export const createServer = async () => {
   const app: Application = express();
   const httpServer = new HTTPServer(app);
+  // Initialize Socket.IO
+  const socketManager = new SocketManager(httpServer);
+  //Single Source of Truth only one io server
+  const io = socketManager.getIO();
   // 0. setup webhook routes
   setupWebhookRoutes(app);
 
@@ -44,7 +49,7 @@ export const createServer = async () => {
   setupTestRoutes(app);
 
   // 4. API Routes
-  app.use('/api', configureRoute());
+  app.use('/api', configureRoute(io));
 
   // 5. Error Handling & Logging (Must be last)
   setupErrorHandling(app);

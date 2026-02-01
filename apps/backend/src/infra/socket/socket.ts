@@ -1,5 +1,8 @@
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import { Server as HTTPServer } from 'http';
+
+// this class for define and listen to all event that come from client
+// but server event we just emit it from any sevrice file
 export class SocketManager {
   private io: SocketIOServer;
   constructor(httpServer: HTTPServer) {
