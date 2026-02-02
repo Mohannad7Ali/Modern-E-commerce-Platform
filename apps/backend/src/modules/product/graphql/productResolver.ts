@@ -1,78 +1,56 @@
 import AppError from '@/shared/errors/AppError';
 import { PrismaClient } from '@/generated/prisma-client/client';
 import { Request, Response } from 'express';
-
-/**
- * Resolver
- * it is all the function that execute queries in shcema
- * for each query we have to add function resolver tell app how to get data and from where
- *
- */
-/**
- * context
- * it is object pass through all resolvers
- * it contains db connection and user data
- */
-export interface Context {
+interface FilterType {
+  search?: string;
+  isNew?: boolean;
+  isFeatured?: boolean;
+  isTrending?: boolean;
+  isBestSeller?: boolean;
+  minPrice?: number;
+  maxPrice?: number;
+  categoryId?: string;
+  flags?: string[];
+}
+interface Context {
   prisma: PrismaClient;
   req: Request;
   res: Response;
 }
-
 export const productResolvers = {
   Query: {
     products: async (
       _: any,
-      {
-        first = 10,
-        skip = 0,
-        filters = {}
-      }: {
-        first?: number;
-        skip?: number;
-        filters?: {
-          search?: string;
-          isNew?: boolean;
-          isFeatured?: boolean;
-          isTrending?: boolean;
-          isBestSeller?: boolean;
-          minPrice?: number;
-          maxPrice?: number;
-          categoryId?: string;
-          flags?: string[];
-        };
-      },
+      { first = 10, skip = 0, filters = {} }: { first?: number; skip?: number; filters?: FilterType },
       context: Context
     ) => {
       const where: any = {};
-
-      // Search filter
+      // search filter
       if (filters.search) {
+        // OR is conditoin array
         where.OR = [
           { name: { contains: filters.search, mode: 'insensitive' } },
           { description: { contains: filters.search, mode: 'insensitive' } }
         ];
       }
-
-      // Flag filters
+      // flag filters
       if (filters.isNew !== undefined) where.isNew = filters.isNew;
       if (filters.isFeatured !== undefined) where.isFeatured = filters.isFeatured;
       if (filters.isTrending !== undefined) where.isTrending = filters.isTrending;
       if (filters.isBestSeller !== undefined) where.isBestSeller = filters.isBestSeller;
-
-      // ✅ OR logic for multiple flags
+      // OR logic for multiple flags
       if (filters.flags && filters.flags.length > 0) {
-        const flagConditions = filters.flags.map(flag => ({ [flag]: true }));
+        const flagConditions = filters.flags.map(flag => {
+          return { [flag]: true };
+        });
         if (!where.OR) where.OR = [];
         where.OR = [...where.OR, ...flagConditions];
       }
-
-      // Category filter
+      //category filter
       if (filters.categoryId) {
         where.categoryId = filters.categoryId;
       }
-
-      // Price filter (based on variants)
+      //price filter
       if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
         where.variants = {
           some: {
@@ -84,7 +62,7 @@ export const productResolvers = {
         };
       }
 
-      const totalCount = await context.prisma.product.count({ where });
+      // get data
       const products = await context.prisma.product.findMany({
         where,
         take: first,
@@ -95,7 +73,7 @@ export const productResolvers = {
           reviews: true
         }
       });
-
+      const totalCount = await context.prisma.product.count({ where });
       return {
         products,
         hasMore: skip + products.length < totalCount,
@@ -221,7 +199,6 @@ export const productResolvers = {
       });
     }
   },
-
   Product: {
     reviews: (parent: any, _: any, context: Context) => {
       return context.prisma.review.findMany({
