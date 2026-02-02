@@ -12,7 +12,7 @@ interface FilterType {
   categoryId?: string;
   flags?: string[];
 }
-interface Context {
+export interface Context {
   prisma: PrismaClient;
   req: Request;
   res: Response;
