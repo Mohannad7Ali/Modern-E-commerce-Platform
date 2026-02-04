@@ -21,7 +21,7 @@ import { uploadToCloudinary } from './shared/utils/uploadToCloudinary';
 import helmet from 'helmet';
 import webhookRoutes from './modules/webhook/webhook.routes';
 import { SocketManager } from '@/infra/socket/socket';
-
+import { configureGraphQL } from '@/graphql/index';
 /**
  * Server Factory Function
  * Organizes infrastructure, security, and routing
@@ -50,7 +50,7 @@ export const createServer = async () => {
 
   // 4. API Routes
   app.use('/api', configureRoute(io));
-
+  await configureGraphQL(app);
   // 5. Error Handling & Logging (Must be last)
   setupErrorHandling(app);
 

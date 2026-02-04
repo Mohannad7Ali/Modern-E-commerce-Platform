@@ -5,12 +5,15 @@ import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { prisma } from '@/infra/database/prisma';
 import { combinedSchemas } from './v1/schema';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 
 export async function configureGraphQL(app: express.Application) {
   // define apollo server with schemas
   const apolloServer = new ApolloServer({
     schema: combinedSchemas,
     introspection: process.env.NODE_ENV !== 'production',
+    csrfPrevention: process.env.NODE_ENV !== 'production' && false,
+    plugins: [ApolloServerPluginLandingPageLocalDefault()],
     includeStacktraceInErrorResponses: process.env.NODE_ENV !== 'production'
   });
   await apolloServer.start();

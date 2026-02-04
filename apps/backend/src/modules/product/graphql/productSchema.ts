@@ -3,7 +3,7 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 import { productResolvers } from './productResolver';
 const typeDefs = gql`
   scalar DateTime
-  type product {
+  type Product {
     id: String!
     slug: String!
     name: String!
