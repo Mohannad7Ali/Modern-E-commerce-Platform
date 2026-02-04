@@ -9,6 +9,9 @@ import AppError from '@/shared/errors/AppError';
 import BadRequestError from '@/shared/errors/BadRequestError';
 import { verificationTokenRepository } from './repositories/verificationToken.repository';
 import { VERIFICATION_TYPE } from '@/generated/prisma-client/client';
+import { sendEmail } from '@/shared/utils/mailer';
+import passwordResetTemplate from '@/shared/templates/passwordReset';
+
 export class AuthService {
   constructor(private userRepository: UserRepository) {}
 
@@ -82,8 +85,16 @@ export class AuthService {
       type: VERIFICATION_TYPE.PASSWORD_RESET,
       expiresAt: new Date(Date.now() + 15 * 60 * 1000)
     });
+    const resetUrl = `${process.env.CLIENT_URL}/password-reset/${token}`;
 
-    // TODO: Email Service
+    const htmlTemplate = passwordResetTemplate(resetUrl, token);
+
+    await sendEmail({
+      to: user.email,
+      subject: 'Reset your password',
+      html: htmlTemplate,
+      text: 'Reset your password'
+    });
     console.log(`RESET LINK: /reset-password?token=${token}`);
   };
 
