@@ -5,15 +5,67 @@ import { UserRepository } from './repositories/user.repository';
 import { requireAuth } from './middlewares/require-auth';
 import { validateDto } from '@/shared/middlewares/validateDto';
 import { ForgotPasswordDto, RegisterDto, ResetPasswordDto, SigninDto } from './auth.dto';
-
+import handleSocialLogin from '@/shared/utils/handleSocialLogin';
+import passport from 'passport';
+import { cookieOptions } from '@/shared/constants';
+import { CartService } from '../cart/cart.service';
+import { CartRepository } from '../cart/cart.repository';
 const router = Router();
 const authController = new AuthController(new AuthService(new UserRepository()));
+const cartService = new CartService(new CartRepository());
+const CLIENT_URL_DEV = process.env.CLIENT_URL_DEV;
+const CLIENT_URL_PROD = process.env.CLIENT_URL_PROD;
+const env = process.env.NODE_ENV;
 /**
  * @swagger
  * tags:
  *   name: Auth
  *   description: Authentication & authorization endpoints
  */
+
+/**
+ * @swagger
+ * /google:
+ *   get:
+ *     tags: [Auth]
+ *     summary: Redirect to Google for authentication
+ *     description: Initiates the OAuth flow for Google login.
+ *     responses:
+ *       302:
+ *         description: Redirect to Google login page.
+ */
+router.get('/google', handleSocialLogin('google'));
+/**
+ * @swagger
+ * /google/callback:
+ *   get:
+ *     tags: [Auth]
+ *     summary: Handle callback from Google OAuth
+ *     description: Handles the response from Google after OAuth authentication is complete.
+ *     responses:
+ *       200:
+ *         description: Successfully authenticated with Google.
+ */
+router.get(
+  '/google/callback',
+  passport.authenticate('google', {
+    session: false,
+    failureRedirect: env === 'production' ? CLIENT_URL_PROD : CLIENT_URL_DEV
+  }),
+  async (req: any, res: any) => {
+    const user = req.user;
+    const { accessToken, refreshToken } = user;
+
+    res.cookie('refreshToken', refreshToken, cookieOptions);
+    res.cookie('accessToken', accessToken, cookieOptions);
+
+    const userId = user.id;
+    const sessionId = req.session.id;
+    await cartService?.mergeCartsOnLogin(sessionId, userId);
+
+    res.redirect(env === 'production' ? CLIENT_URL_PROD : CLIENT_URL_DEV);
+  }
+);
 
 /**
  * @swagger
