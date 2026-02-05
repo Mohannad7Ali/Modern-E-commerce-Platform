@@ -27,6 +27,7 @@ const pool = new Pool({
   },
   keepAlive: true // لإبقاء الاتصال حياً
 });
+
 // التعامل مع أخطاء الـ Pool المفاجئة لكي لا ينهار السيرفر
 pool.on('error', err => {
   console.error('Unexpected error on idle client', err);
@@ -69,9 +70,32 @@ if (env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma;
 }
 
+// -----------------------------
+// 6. Database Connection Helper
+// -----------------------------
+/**
+ * Function to manually trigger and verify the database connection.
+ * We use the singleton 'prisma' instance defined above.
+ */
+export const connectDB = async () => {
+  try {
+    // نستخدم الـ singleton instance الذي أنشأناه بالأعلى
+    await prisma.$connect();
+    console.log('✅ Neon Database connected successfully via Prisma Adapter.');
+  } catch (error) {
+    console.error('❌ Failed to connect to Neon Database:');
+    console.error(error);
+    // في بيئة الإنتاج، قد ترغب في إنهاء العملية إذا فشل الاتصال بالقاعدة
+    // process.exit(1);
+  }
+};
+
 /**
  * Summary:
  * - We use 'pg' Pool for stable connections.
  * - We use 'PrismaPg' adapter as required by Prisma 7.
  * - We use 'globalThis' to avoid "too many connections" errors during development.
+ * - Added 'connectDB' to verify the connection during server startup.
  */
+
+export default prisma;

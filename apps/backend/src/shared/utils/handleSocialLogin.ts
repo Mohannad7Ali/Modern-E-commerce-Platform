@@ -7,6 +7,7 @@ const handleSocialLogin = (provider: string) => {
   return passport.authenticate(provider, {
     session: false,
     scope: scopes
+    // callbackURL: provider === 'google' ? process.env.GOOGLE_CALLBACK_URL : undefined
   });
 };
 
