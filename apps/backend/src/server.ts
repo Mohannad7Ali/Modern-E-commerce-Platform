@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import { createServer } from './app';
 import env from '@/config/env';
 import logger from '@/infra/logging/logger';
