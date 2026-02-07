@@ -1,19 +1,12 @@
-import { Request } from 'express';
-import { Session } from 'express-session';
-
+import { User as PrismaUser } from '@/generated/prisma-client/client';
+export interface RequestUser {
+  id: string;
+  role: string;
+}
 declare global {
   namespace Express {
-    interface Request {
-      // تعريف المستخدم الذي أضفته أنت
-      user?: {
-        id: string;
-        role: string;
-      };
-      // إضافة تعريف الجلسة لكي يتعرف عليها TypeScript
-      session: Session & {
-        userId?: string;
-        role?: string;
-      };
-    }
+    interface User extends RequestUser {}
   }
 }
+
+export {};

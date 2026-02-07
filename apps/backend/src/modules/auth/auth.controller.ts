@@ -7,6 +7,7 @@ import AppError from '@/shared/errors/AppError';
 import asyncHandler from '@/shared/utils/asyncHandler';
 import { Role } from './utils/token.types';
 import { ROLE } from '@/generated/prisma-client/enums';
+
 export class AuthController {
   private logsService = makeLogsService();
 

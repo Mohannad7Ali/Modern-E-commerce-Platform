@@ -3,9 +3,20 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { prisma } from '@/infra/database/prisma';
 import { TokenService } from '@/modules/auth/utils/token.service';
 import { ROLE } from '@/generated/prisma-client/enums';
-
+interface AuthenticatedUser {
+  id: string;
+  email: string;
+  name?: string | null;
+  avatar?: string | null;
+  googleId?: string | null;
+  role: ROLE;
+  accessToken: string;
+  refreshToken: {
+    token: string;
+    expiresAt: Date;
+  };
+}
 export default function configurePassport() {
-  // GOOGLE
   passport.use(
     new GoogleStrategy(
       {
@@ -18,13 +29,17 @@ export default function configurePassport() {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          let user = await prisma.user.findUnique({ where: { email: profile.emails![0].value } });
+          let user = await prisma.user.findUnique({
+            where: { email: profile.emails![0].value }
+          });
+
           if (user && !user.googleId) {
             user = await prisma.user.update({
               where: { email: profile.emails![0].value },
               data: { googleId: profile.id, avatar: profile.photos![0]?.value || '' }
             });
           }
+
           if (!user) {
             user = await prisma.user.create({
               data: {
@@ -35,19 +50,24 @@ export default function configurePassport() {
               }
             });
           }
-          const id = user.id;
+
           const payload = {
-            userId: id,
+            userId: user.id,
             role: 'USER' as ROLE
           };
-          return done(null, {
-            ...user,
+
+          const authUser: AuthenticatedUser = {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            avatar: user.avatar,
+            googleId: user.googleId,
+            role: user.role,
             accessToken: TokenService.generateAccessToken(payload),
             refreshToken: TokenService.generateRefreshToken()
-          });
-          // done back user to passport so i can use it in route
-          // req.user = returned object
-          // here we combined data with route
+          };
+
+          return done(null, authUser);
         } catch (error) {
           done(error);
         }

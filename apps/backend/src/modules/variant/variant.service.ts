@@ -5,7 +5,10 @@ import { CreateVariantParams } from './variant.types';
 import { ProductRepository } from '../product/product.repository';
 import { prisma } from '@/infra/database/prisma';
 export class VariantService {
-  constructor(private readonly VariantRepository: VariantRepository) {}
+  constructor(
+    private readonly VariantRepository: VariantRepository,
+    private readonly ProductRepository: ProductRepository
+  ) {}
   async getAllVariants(queryString: Record<string, any>) {
     const apiFeatures = new ApiFeatures(queryString).filter().sort().limitFields().paginate().build();
     const { where, orderBy, skip, take, select } = apiFeatures;
@@ -47,7 +50,7 @@ export class VariantService {
   }
   async createVariant(data: CreateVariantParams) {
     const { productId, attributes } = data;
-    const product = await ProductRepository.findById(productId);
+    const product = await this.ProductRepository.findProductById(productId);
     if (!product) {
       throw new AppError(404, 'Product not found');
     }
