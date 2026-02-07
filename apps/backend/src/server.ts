@@ -1,4 +1,6 @@
-import 'module-alias/register';
+if (process.env.NODE_ENV === 'production') {
+  require('module-alias/register');
+}
 import { createServer } from './app';
 import env from '@/config/env';
 import logger from '@/infra/logging/logger';

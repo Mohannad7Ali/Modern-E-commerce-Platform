@@ -32,6 +32,7 @@ import webhookRoutes from './modules/webhook/webhook.routes';
 import { SocketManager } from '@/infra/socket/socket';
 import { configureGraphQL } from '@/graphql/index';
 import { connectDB } from './infra/database/prisma';
+import systemRoutes from '@/modules/system/system.routes';
 
 /**
  * Server Factory
@@ -121,9 +122,15 @@ function setupStandardMiddleware(app: Application) {
   app.use(bodyParser.urlencoded({ extended: true }));
 
   app.use(cookieParser(process.env.COOKIE_SECRET));
-
+  app.use(
+    morgan('combined', {
+      stream: {
+        write: msg => logger.info(msg.trim())
+      }
+    })
+  );
   // Health
-  app.get('/health', (_, res) => res.json({ status: 'ok', time: new Date() }));
+  app.use('/', systemRoutes);
 }
 
 function setupSecurityMiddleware(app: Application) {
@@ -153,14 +160,6 @@ function setupAdvancedSecurity(app: Application) {
   );
 
   app.use(compression());
-
-  app.use(
-    morgan('combined', {
-      stream: {
-        write: msg => logger.info(msg.trim())
-      }
-    })
-  );
 }
 
 function setupSessionMiddleware(app: Application) {
