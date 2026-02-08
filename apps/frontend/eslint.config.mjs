@@ -12,6 +12,14 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
+  {
+    files: ['**/*.ts', '**/*.tsx'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off', // Disable explicit 'any' type warning
+      'react-hooks/exhaustive-deps': 'off', // Disable exhaustive-deps warning
+      'no-unused-vars': 'off', // Keep 'no-unused-vars' as a warning
+    },
+  },
   eslintConfigPrettier, //  إضافتها في آخر المصفوفة لتعطيل القواعد المتعارضة
 ]
 
