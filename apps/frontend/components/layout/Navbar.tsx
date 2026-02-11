@@ -2,7 +2,7 @@
 import useEventListener from '@/hooks/dom/useEventListner'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import useClickOutside from '@/hooks/dom/useClickOutside'
 import SearchBar from '../molecules/SearchBar'
 import { ShoppingCart, Menu, X, CircleUserRound, Search, LogOut } from 'lucide-react'
@@ -23,15 +23,10 @@ const Navbar = () => {
   const isAuthenticated = true
   const isLoading = false
   const user = { role: 'user', id: '1', avatar: '', name: 'Mohannad Ali' }
-  const [avatar, setAvatar] = useState<string | null>(null)
-  useEffect(() => {
-    if (user?.avatar) {
-      setAvatar(user.avatar)
-    } else {
-      setAvatar(generateUserAvatar(user?.name || 'User'))
-    }
+  const avatarSrc = useMemo(() => {
+    if (user?.avatar) return user.avatar
+    return generateUserAvatar(user?.name || 'User')
   }, [user])
-  const avatarSrc = user?.avatar && user.avatar.trim() !== '' ? user.avatar : generateUserAvatar(user?.name || 'User')
 
   const handleSignOut = () => {
     // Sign out logic here

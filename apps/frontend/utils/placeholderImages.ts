@@ -19,7 +19,7 @@ export const generatePlaceholderImage = (text: string, size: number = 200): stri
     '#84cc16', // Lime
   ]
 
-  const randomColor = colors[Math.floor(Math.random() * colors.length)]
+  const randomColor = colors[Math.floor(2)]
 
   // Create a simple SVG placeholder
   const svg = `
