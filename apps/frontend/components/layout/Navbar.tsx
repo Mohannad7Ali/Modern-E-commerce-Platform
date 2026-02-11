@@ -2,7 +2,7 @@
 import useEventListener from '@/hooks/dom/useEventListner'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import useClickOutside from '@/hooks/dom/useClickOutside'
 import SearchBar from '../molecules/SearchBar'
 import { ShoppingCart, Menu, X, CircleUserRound, Search, LogOut } from 'lucide-react'
@@ -23,6 +23,16 @@ const Navbar = () => {
   const isAuthenticated = true
   const isLoading = false
   const user = { role: 'user', id: '1', avatar: '', name: 'Mohannad Ali' }
+  const [avatar, setAvatar] = useState<string | null>(null)
+  useEffect(() => {
+    if (user?.avatar) {
+      setAvatar(user.avatar)
+    } else {
+      setAvatar(generateUserAvatar(user?.name || 'User'))
+    }
+  }, [user])
+  const avatarSrc = user?.avatar && user.avatar.trim() !== '' ? user.avatar : generateUserAvatar(user?.name || 'User')
+
   const handleSignOut = () => {
     // Sign out logic here
   }
@@ -89,20 +99,20 @@ const Navbar = () => {
                     {user?.avatar ? (
                       <div className="h-7 w-7 overflow-hidden rounded-full border border-gray-300 bg-gray-200">
                         <Image
-                          src={user.avatar}
+                          src={avatarSrc}
                           alt="User Profile"
                           width={28}
                           height={28}
                           className="h-full w-full rounded-full object-cover"
                           onError={e => {
-                            e.currentTarget.src = generateUserAvatar(user.name)
+                            e.currentTarget.src = avatarSrc
                           }}
                         />
                       </div>
                     ) : (
                       <div className="h-[35px] w-[35px] overflow-hidden rounded-full border border-gray-300">
                         <Image
-                          src={generateUserAvatar(user?.name || 'User')}
+                          src={avatarSrc}
                           alt="User Profile"
                           width={35}
                           height={35}
