@@ -15,12 +15,15 @@ const eslintConfig = [
   {
     files: ['**/*.ts', '**/*.tsx'],
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off', // Disable explicit 'any' type warning
-      'react-hooks/exhaustive-deps': 'off', // Disable exhaustive-deps warning
-      'no-unused-vars': 'off', // Keep 'no-unused-vars' as a warning
+      '@typescript-eslint/no-unused-vars': 'warn',
+
+      'no-unused-vars': 'warn',
+
+      '@typescript-eslint/no-explicit-any': 'off',
+      'react-hooks/exhaustive-deps': 'off',
     },
   },
-  eslintConfigPrettier, //  إضافتها في آخر المصفوفة لتعطيل القواعد المتعارضة
+  eslintConfigPrettier,
 ]
 
 export default eslintConfig

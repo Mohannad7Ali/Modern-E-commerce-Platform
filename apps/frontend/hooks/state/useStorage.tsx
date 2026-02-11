@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 
 type StorageType = 'local' | 'session'
-function useStorage<T>(key: string, initialValue: T, storageType: StorageType) {
+function useStorage<T>(key: string, initialValue: T, storageType: StorageType = 'local') {
   const isClient = typeof window !== 'undefined'
   const storage = isClient ? (storageType === 'local' ? window.localStorage : window.sessionStorage) : null
-  const getStoredValue = (): T => {
+  const getStoredValue = () => {
     if (isClient && storage) {
       try {
         const item = storage.getItem(key)
