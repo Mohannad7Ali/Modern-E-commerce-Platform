@@ -32,7 +32,7 @@ export const userApi = apiSlice.injectEndpoints({
     }),
     getMe: builder.query<User, void>({
       query: () => ({
-        url: '/users/me',
+        url: '/auth/me',
         method: 'GET',
       }),
       providesTags: ['User'],

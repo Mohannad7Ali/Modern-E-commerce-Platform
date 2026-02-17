@@ -28,8 +28,8 @@ const SignIn = () => {
   }
 
   const handleOAuthLogin = (provider: string) => {
-    // console.log('Using AUTH API URL:', AUTH_API_BASE_URL)
-    // window.location.href = `${AUTH_API_BASE_URL}/auth/${provider}`
+    console.log('Using AUTH API URL:', AUTH_API_BASE_URL)
+    window.location.href = `${AUTH_API_BASE_URL}/auth/${provider}`
   }
   return (
     <div className="flex min-h-screen items-center justify-center p-4 sm:p-6">
