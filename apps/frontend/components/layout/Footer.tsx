@@ -5,7 +5,7 @@ import Link from 'next/link'
 const FooterLogo = () => (
   <svg viewBox="0 0 120 40" className="h-10">
     <text x="0" y="28" fontFamily="Arial" fontSize="24" fontWeight="bold" fill="currentColor">
-      Swift
+      Horizon Store
     </text>
   </svg>
 )
