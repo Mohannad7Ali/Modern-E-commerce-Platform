@@ -20,7 +20,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         if (user) {
           dispatch(setUser({ user }))
         } else {
-          console.error('No user data in response')
+          console.error('No user data in response ')
           dispatch(logout())
         }
       } catch (error: any) {
@@ -29,7 +29,10 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         if (error?.status === 401) {
           dispatch(logout())
         } else {
-          console.error('Unexpected error during auth', error)
+          console.error(
+            'Unexpected error during auth from AuthProvider (No user data in response )',
+            error.data.message,
+          )
         }
       }
     })()

@@ -2,34 +2,46 @@
 import useEventListener from '@/hooks/dom/useEventListner'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import useClickOutside from '@/hooks/dom/useClickOutside'
 import SearchBar from '../molecules/SearchBar'
-import { ShoppingCart, Menu, X, CircleUserRound, Search, LogOut } from 'lucide-react'
+import { ShoppingCart, Menu, X, Search, LogOut } from 'lucide-react'
+import { useAppDispatch } from '@/store/hooks'
 import { generateUserAvatar } from '@/utils/placeholderImages'
 import Image from 'next/image'
 import UserMenu from '../molecules/UserMenu'
+import { useSignOutMutation } from '@/store/apis/AuthApi'
+import { logout } from '@/store/slices/AuthSlice'
+import { useAuth } from '@/hooks/useAuth'
+
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false)
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
+  const dispatch = useAppDispatch()
   const mobileMenuRef = useRef<HTMLDivElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
+  const { user, isLoading, isAuthenticated } = useAuth()
+
   useClickOutside(menuRef, () => setMenuOpen(false))
   useClickOutside(mobileMenuRef, () => setMobileMenuOpen(false))
-
-  const isAuthenticated = true
-  const isLoading = false
-  const user = { role: 'user', id: '1', avatar: '', name: 'Mohannad Ali' }
+  const [signout] = useSignOutMutation()
   const avatarSrc = useMemo(() => {
     if (user?.avatar) return user.avatar
     return generateUserAvatar(user?.name || 'User')
   }, [user])
 
-  const handleSignOut = () => {
-    // Sign out logic here
+  const handleSignOut = async () => {
+    try {
+      await signout()
+      dispatch(logout())
+      router.push('/sign-in')
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
   }
   const cartData = { cartCount: 20 }
   useEventListener('scroll', () => {

@@ -7,13 +7,15 @@ import { useForm } from 'react-hook-form'
 import Image from 'next/image'
 import GoogleIcon from '@/assets/icons/google.png'
 import { AUTH_API_BASE_URL } from '@/lib/constants/config'
+import { useSignInMutation } from '@/store/apis/AuthApi'
 interface InputForm {
   email: string
   password: string
 }
 const SignIn = () => {
+  const [signin, { isLoading, error }] = useSignInMutation()
   const router = useRouter()
-  const isLoading = false
+
   const {
     control,
     handleSubmit,
@@ -21,6 +23,7 @@ const SignIn = () => {
   } = useForm<InputForm>({ defaultValues: { email: '', password: '' } })
   const onSubmit = async (formData: InputForm) => {
     try {
+      await signin(formData).unwrap()
       router.push('/')
     } catch (error) {
       console.error('error: ', error)

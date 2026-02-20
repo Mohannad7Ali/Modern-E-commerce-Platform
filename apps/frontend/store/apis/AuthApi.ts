@@ -30,7 +30,7 @@ export const authApi = apiSlice.injectEndpoints({
     }),
     signup: builder.mutation<{ accessToken: string; user: User }, { name: string; email: string; password: string }>({
       query: data => ({
-        url: '/auth/register',
+        url: '/auth/sign-up',
         method: 'POST',
         body: data,
       }),
@@ -43,7 +43,7 @@ export const authApi = apiSlice.injectEndpoints({
     signOut: builder.mutation<void, void>({
       query: () => ({
         url: '/auth/sign-out',
-        method: 'GET',
+        method: 'POST',
       }),
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         await queryFulfilled
@@ -66,7 +66,7 @@ export const authApi = apiSlice.injectEndpoints({
     }),
     checkAuth: builder.mutation<{ accessToken: string; user: User }, void>({
       query: () => ({
-        url: '/auth/refresh-token',
+        url: '/auth/refresh',
         method: 'POST',
       }),
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {

@@ -12,3 +12,10 @@ export interface User {
     email: string
   }
 }
+export interface UserData {
+  id: string
+  name: string
+  role: string
+  avatar: string | null
+  email: string
+}
