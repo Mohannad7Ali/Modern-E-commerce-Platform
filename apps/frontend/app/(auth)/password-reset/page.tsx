@@ -12,7 +12,8 @@ const PasswordReset = () => {
   })
   const [successMessage, setSuccessMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
-
+  const [isDisabled, setIsDisabled] = useState(false)
+  const [countdown, setCountdown] = useState(0)
   const onSubmit = async (data: any) => {
     try {
       const res = await axiosInstance.post('/auth/forgot-password', data)
@@ -27,6 +28,18 @@ const PasswordReset = () => {
         setSuccessMessage(
           'Check your email for a link to reset your password. If it doesn’t appear within a few minutes, check your spam folder.',
         )
+        setIsDisabled(true)
+        setCountdown(60)
+        const timer = setInterval(() => {
+          setCountdown(prev => {
+            if (prev <= 1) {
+              clearInterval(timer)
+              setIsDisabled(false)
+              return 0
+            }
+            return prev - 1
+          })
+        }, 1000)
         setErrorMessage('') // Clear error message
         reset() // Reset form
       }
@@ -68,10 +81,15 @@ const PasswordReset = () => {
           className="py-4"
         />
 
-        <Button type="submit" className="bg-primary mt-4 w-full rounded py-3 text-white">
-          Send reset link
+        <Button
+          type="submit"
+          disabled={isDisabled}
+          className={`bg-primary mt-4 w-full rounded py-3 text-white ${
+            isDisabled ? 'cursor-not-allowed opacity-50' : ''
+          }`}
+        >
+          {isDisabled ? `Resend in ${countdown}s` : 'Send reset link'}
         </Button>
-
         <Link className="mt-4 hover:underline" href={'/sign-in'}>
           Return to sign in
         </Link>

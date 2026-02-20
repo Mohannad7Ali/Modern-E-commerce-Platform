@@ -5,14 +5,14 @@ import { LucideIcon } from 'lucide-react'
 
 interface InputProps {
   label?: string
-  control: any // The 'control' object from useForm() to manage this input
-  name: string // Unique name for the form field
+  control: any
+  name: string
   type?: string
   placeholder?: string
-  validation?: object // Rules like { required: true, minLength: 5 }
+  validation?: object
   icon?: LucideIcon
   className?: string
-  error?: string // Error message to display if validation fails
+  error?: string
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
@@ -23,45 +23,46 @@ const Input: React.FC<InputProps> = ({
   type = 'text',
   placeholder,
   validation = {},
-  icon: Icon, // Destructuring and renaming to 'Icon' (Capitalized) to use as a component
+  icon: Icon,
   className = '',
   error,
   onChange,
 }) => {
   return (
-    <div className="relative w-full">
-      {/* 1. Label Rendering: Only shows if 'label' prop is provided */}
-      {label && <label className="font-medium text-gray-700">{label}</label>}
+    <div className="flex w-full flex-col gap-1.5">
+      {/* 1. Label - أكثر أناقة مع تباعد أفضل */}
+      {label && <label className="ml-1 text-sm font-semibold text-gray-700">{label}</label>}
 
-      {/* 2. Controller: Acts as a "Wrapper" to connect the input to React Hook Form */}
-      <Controller
-        name={name}
-        control={control}
-        rules={validation}
-        render={({ field }) => (
-          <input
-            {...field} // 3. Binding: Spreads 'value', 'onBlur', 'ref', and 'onChange' into the input
-            type={type}
-            placeholder={placeholder}
-            className={`mt-[6px] w-full border-b-2 border-gray-300 p-[14px] pr-10 pl-3 text-gray-800 placeholder:text-gray-600 focus:border-gray-700 focus:outline-none ${className}`}
-            onChange={e => {
-              // 4. Manual Change Handling:
-              field.onChange(e) // Updates React Hook Form state
-              if (onChange) onChange(e) // Executes custom logic if passed from parent
-            }}
-          />
+      <div className="group relative">
+        {/* 2. Controller & Input */}
+        <Controller
+          name={name}
+          control={control}
+          rules={validation}
+          render={({ field }) => (
+            <input
+              {...field}
+              type={type}
+              placeholder={placeholder}
+              className={`/* الحالة العادية */ /* حالة التركيز (Focus) */ /* حالة وجود خطأ */ w-full rounded-xl border-2 border-gray-100 bg-gray-50/50 px-4 py-3 text-gray-800 transition-all duration-200 outline-none placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 ${error ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-red-500/10' : ''} ${Icon ? 'pr-11' : ''} ${className} `}
+              onChange={e => {
+                field.onChange(e)
+                if (onChange) onChange(e)
+              }}
+            />
+          )}
+        />
+
+        {Icon && (
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+            <Icon
+              className={`h-5 w-5 transition-colors duration-200 ${error ? 'text-red-400' : 'text-gray-400 group-focus-within:text-blue-500'}`}
+            />
+          </div>
         )}
-      />
+      </div>
 
-      {/* 5. Icon Rendering: Displays the Lucide icon at the end of the input */}
-      {Icon && (
-        <div className="absolute top-[63%] right-3 -translate-y-1/2 transform">
-          <Icon className="h-[22px] w-[22px] text-gray-800" />
-        </div>
-      )}
-
-      {/* 6. Error Message: Displays validation errors conditionally */}
-      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+      {error && <p className="animate-in fade-in slide-in-from-top-1 ml-1 text-xs font-medium text-red-500">{error}</p>}
     </div>
   )
 }

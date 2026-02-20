@@ -57,11 +57,11 @@ export const authApi = apiSlice.injectEndpoints({
         body: { email },
       }),
     }),
-    resetPassword: builder.mutation<void, { token: string; password: string }>({
-      query: ({ token, password }) => ({
+    resetPassword: builder.mutation<void, { token: string; newPassword: string }>({
+      query: ({ token, newPassword }) => ({
         url: '/auth/reset-password',
         method: 'POST',
-        body: { token, password },
+        body: { token, newPassword },
       }),
     }),
     checkAuth: builder.mutation<{ accessToken: string; user: User }, void>({
