@@ -1,6 +1,6 @@
 import { useLazyGetMeQuery } from '@/store/apis/UserApi'
 import { useAppDispatch } from '@/store/hooks'
-import { logout, setUser } from '@/store/slices/AuthSlice'
+import { logout, setUser, setUserNull } from '@/store/slices/AuthSlice'
 import { useEffect } from 'react'
 // When the app loads reloads or browser refresh Redux lose state → check if the user is authenticated → sync Redux state.
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -20,6 +20,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         if (user) {
           dispatch(setUser({ user }))
         } else {
+          dispatch(setUserNull())
           console.log('No user data in response ')
           dispatch(logout())
         }
@@ -29,7 +30,10 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         if (error?.status === 401) {
           dispatch(logout())
         } else {
-          console.log('Unexpected error during auth from AuthProvider (No user data in response )', error.data.message)
+          console.log(
+            'Unexpected error during auth from AuthProvider (No user data in response )',
+            error?.data?.message ?? '',
+          )
         }
       }
     })()
