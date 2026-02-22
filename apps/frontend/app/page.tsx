@@ -1,7 +1,11 @@
 'use client'
 import { RequireAuth } from '@/providers/HOC/RequireAuth'
-
+import { HeroSection } from '@/app/(public)/(home)/HeroSection'
 function Home() {
-  return <div>Ecommerce</div>
+  return (
+    <div>
+      <HeroSection isPreview={false} />
+    </div>
+  )
 }
-export default RequireAuth(Home)
+export default Home

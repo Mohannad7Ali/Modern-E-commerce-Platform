@@ -23,7 +23,7 @@ const baseQueryWithReauth: BaseQueryFn<
   // If request failed with 401 (Unauthorized)
   if (result.error?.status === 401) {
     // Attempt to refresh the token
-    const refreshResult = await baseQuery({ url: '/auth/refresh-token', method: 'POST' }, api, extraOptions)
+    const refreshResult = await baseQuery({ url: '/auth/refresh', method: 'POST' }, api, extraOptions)
 
     // If refresh succeeds
     if (refreshResult.data) {
