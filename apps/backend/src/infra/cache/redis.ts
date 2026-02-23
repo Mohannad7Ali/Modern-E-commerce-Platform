@@ -15,11 +15,18 @@ const redisClient = createClient({
   password: process.env.REDIS_PASSWORD,
   socket: {
     host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 10922
+    port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 10922,
+      reconnectStrategy: (retries) => {
+      if (retries > 10) return new Error('Redis reconnection failed');
+      return Math.min(retries * 100, 3000); 
+    }
+
   }
 });
-
-// Event listener for connection errors
+// const redisClient = createClient({
+//   url: `redis://${process.env.REDIS_USER}:${process.env.REDIS_PASSWORD}@${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
+// });
+// // Event listener for connection errors
 redisClient.on('error', err => console.log('❌ Redis Client Error:', err));
 
 // Event listener for successful connection

@@ -7,6 +7,8 @@ import AppError from '@/shared/errors/AppError';
 import asyncHandler from '@/shared/utils/asyncHandler';
 import { Role } from './utils/token.types';
 import { ROLE } from '@/generated/prisma-client/enums';
+import prisma from '@/infra/database/prisma';
+import { readFile } from 'node:fs';
 
 export class AuthController {
   private logsService = makeLogsService();
@@ -71,7 +73,11 @@ export class AuthController {
   });
 
   signout = asyncHandler(async (req: Request, res: Response) => {
-    const refreshToken = req.cookies?.refreshToken;
+    let refreshToken = req.cookies?.refreshToken;
+    console.log('0000000000000000000000', refreshToken);
+    if (typeof refreshToken !== 'string') {
+      refreshToken = refreshToken.token;
+    }
     const userId = req.user?.id;
     const start = Date.now();
     if (refreshToken) {
@@ -89,7 +95,17 @@ export class AuthController {
   });
 
   me = asyncHandler(async (req: Request, res: Response) => {
-    const user = (req as any).user;
+    const userId = (req as any).user.id as string;
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        avatar: true,
+        role: true
+      }
+    });
     sendResponse(res, 200, { data: { user } });
   });
 

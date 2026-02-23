@@ -82,6 +82,7 @@ export const connectDB = async () => {
     // نستخدم الـ singleton instance الذي أنشأناه بالأعلى
     await prisma.$connect();
     console.log('✅ Neon Database connected successfully via Prisma Adapter.');
+    console.log(process.env.DATABASE_URL);
   } catch (error) {
     console.error('❌ Failed to connect to Neon Database:');
     console.error(error);

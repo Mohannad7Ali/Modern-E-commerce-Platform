@@ -1,0 +1,10 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\shared",
+    "\\src\\shared\\errors"
+  ],
+  "SelectedNode": "\\src\\shared\\errors\\BadRequestError.ts",
+  "PreviewInSolutionExplorer": false
+}

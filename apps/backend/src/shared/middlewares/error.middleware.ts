@@ -9,7 +9,7 @@ import logger from '@/infra/logging/logger';
 import env from '@/config/env';
 export function errorMiddleware(err: any, _req: Request, res: Response, _next: NextFunction) {
   logger.error(err);
-  res.status(err.status || 500).json({
+  res.status(err.statusCode || 500).json({
     message: err.message || 'Internal Server Error',
     stack: env.NODE_ENV === 'development' ? err.stack : undefined
   });

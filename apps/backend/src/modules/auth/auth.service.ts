@@ -85,7 +85,10 @@ export class AuthService {
       type: VERIFICATION_TYPE.PASSWORD_RESET,
       expiresAt: new Date(Date.now() + 15 * 60 * 1000)
     });
-    const resetUrl = `${process.env.CLIENT_URL}/password-reset/${token}`;
+    const resetUrl =
+      process.env.NODE_ENV === 'development'
+        ? `${process.env.CLIENT_URL_DEV}/password-reset/${token}`
+        : `${process.env.CLIENT_URL_PROD}/password-reset/${token}`;
 
     const htmlTemplate = passwordResetTemplate(resetUrl, token);
 

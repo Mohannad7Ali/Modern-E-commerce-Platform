@@ -9,7 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "seed": "ts-node -r tsconfig-paths/register src/seeds/seed.ts"
   },
   "keywords": [],
   "author": "",
