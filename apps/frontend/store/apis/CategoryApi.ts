@@ -56,3 +56,11 @@ export const CategoriesApi = apiSlice.injectEndpoints({
     }),
   }),
 })
+export const {
+  useGetAllCategoriesQuery,
+  useGetCategoryQuery,
+  useGetCategoryAttributesQuery,
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
+} = CategoriesApi
