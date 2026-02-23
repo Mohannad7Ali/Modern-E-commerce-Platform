@@ -12,7 +12,7 @@ const baseQuery = fetchBaseQuery({
 })
 
 // Custom baseQuery wrapper to handle token refresh automatically
-const baseQueryWithReauth: BaseQueryFn<
+const baseQueryWithReAuth: BaseQueryFn<
   string | FetchArgs, // args type
   unknown, // result type
   FetchBaseQueryError // error type
@@ -44,7 +44,7 @@ export const apiSlice = createApi({
   reducerPath: 'api',
 
   // Use custom base query with reauthentication
-  baseQuery: baseQueryWithReauth,
+  baseQuery: baseQueryWithReAuth,
 
   // Define tag types for cache invalidation
   tagTypes: [

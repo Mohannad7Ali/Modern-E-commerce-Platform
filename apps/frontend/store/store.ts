@@ -22,7 +22,6 @@ export const store = configureStore({
       serializableCheck: false,
     }).concat(
       // Add RTK Query middleware for caching and invalidation
-      // apiSlice.middleware,
       apiSlice.middleware,
     ),
 
