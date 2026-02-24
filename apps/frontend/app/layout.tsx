@@ -3,6 +3,7 @@ import { Poppins } from 'next/font/google'
 import './globals.css'
 import MainLayout from '@/components/templates/MainLayout'
 import ClientProviders from '@/providers/ClientProvider'
+import { ApolloWrapper } from '@/lib/apollo/wrapper'
 const poppins = Poppins({
   variable: '--font-poppins',
   weight: ['400', '500', '600', '700', '800'],
@@ -23,7 +24,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.variable} antialiased`}>
         <ClientProviders>
-          <MainLayout>{children}</MainLayout>
+          <ApolloWrapper>
+            <MainLayout>{children}</MainLayout>
+          </ApolloWrapper>
         </ClientProviders>
       </body>
     </html>
