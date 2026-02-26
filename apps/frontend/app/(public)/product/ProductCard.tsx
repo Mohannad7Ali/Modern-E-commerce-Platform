@@ -7,8 +7,10 @@ import { Eye } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import Rating from '@/components/feedback/Rating'
 import useTrackInteraction from '@/hooks/miscellaneous/useTrackInteraction'
+import { GetFlaggedProductsQuery } from '@/gql/generated/graphql'
+type QueryProduct = GetFlaggedProductsQuery['products']['products'][0]
 interface ProductCardProps {
-  product: Product
+  product: Product | QueryProduct
 }
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const router = useRouter()
@@ -54,7 +56,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
 
         {/* Action Buttons */}
-        <div className="absolute top-2 right-2 z-10 flex space-x-1">
+        <div className="absolute top-2 right-2 z-10 flex cursor-pointer space-x-1">
           <Link href={`/product/${product.slug}`}>
             <div
               className="rounded-full bg-white/90 p-1.5 shadow-sm backdrop-blur-sm"
@@ -104,7 +106,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {/* Quick Actions */}
         <div className="mt-auto border-t border-gray-100 pt-2 sm:pt-3">
           <button
-            className="w-full rounded-sm bg-indigo-600 py-2 text-xs font-medium text-white sm:py-2.5 sm:text-sm lg:py-3"
+            className="w-full cursor-pointer rounded-sm bg-indigo-600 py-2 text-xs font-medium text-white hover:opacity-90 sm:py-2.5 sm:text-sm lg:py-3"
             onClick={e => {
               e.stopPropagation()
               handleClick()

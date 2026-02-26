@@ -9,7 +9,7 @@ interface HeroSectionProps {
   isPreview?: boolean
 }
 
-export const HeroSection = ({ isPreview = false }: HeroSectionProps) => {
+const HeroSection = ({ isPreview = false }: HeroSectionProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   useEffect(() => {
     if (!isPreview) {
@@ -163,3 +163,4 @@ export const HeroSection = ({ isPreview = false }: HeroSectionProps) => {
     </section>
   )
 }
+export default HeroSection

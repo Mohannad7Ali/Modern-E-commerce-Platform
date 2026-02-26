@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "codegen": "npx graphql-code-generator"
   },
   "dependencies": {
     "@apollo/client": "^4.1.6",
@@ -15,13 +16,14 @@
     "@reduxjs/toolkit": "^2.11.2",
     "axios": "^1.13.5",
     "framer-motion": "^12.34.0",
-    "graphql": "^16.12.0",
+    "graphql": "^16.13.0",
     "lucide-react": "^0.563.0",
     "next": "15.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.71.1",
     "react-redux": "^9.2.0",
+    "rxjs": "^7.8.2",
     "zod": "^4.3.6"
   },
   "devDependencies": {

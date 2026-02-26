@@ -15,9 +15,23 @@ export const GET_PRODUCTS_SUMMARY = gql`
         reviewCount
         variants {
           id
+          sku
           price
           images
           stock
+          lowStockThreshold
+          barcode
+          warehouseLocation
+        }
+        category {
+          id
+          name
+          slug
+        }
+        reviews {
+          id
+          rating
+          comment
         }
       }
     }
