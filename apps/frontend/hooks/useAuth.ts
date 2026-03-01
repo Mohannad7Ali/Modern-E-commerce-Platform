@@ -1,11 +1,11 @@
 import { useAppSelector } from './state/useRedux'
 
 export function useAuth() {
-  const user = useAppSelector(state => state.auth.user)
+  const { user, isLoading } = useAppSelector(state => state.auth)
 
   return {
     user,
     isAuthenticated: !!user,
-    isLoading: user === undefined, // hydration in progress
+    isLoading: isLoading || false, // hydration in progress
   }
 }

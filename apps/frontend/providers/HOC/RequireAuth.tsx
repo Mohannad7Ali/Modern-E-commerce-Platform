@@ -12,9 +12,9 @@ export function RequireAuth<P extends Record<string, unknown>>(Component: React.
 
     useEffect(() => {
       if (!isLoading && !isAuthenticated) {
-        router.push('/sign-in')
+        router.replace('/sign-in')
       }
-    }, [isLoading, isAuthenticated])
+    }, [isLoading, isAuthenticated, router])
 
     if (isLoading) return <CustomLoader />
 
