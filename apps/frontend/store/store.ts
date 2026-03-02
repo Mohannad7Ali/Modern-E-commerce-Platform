@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-// import toastReducer from './slices/ToastSlice'
+import toastReducer from './slices/ToastSlice'
 import { apiSlice } from './slices/ApiSlice'
 import authReducer from './slices/AuthSlice'
 
@@ -10,7 +10,7 @@ export const store = configureStore({
     // Auth slice handles user authentication state
     auth: authReducer,
     // Toast slice handles global notifications
-    // toasts: toastReducer,
+    toasts: toastReducer,
     // RTK Query reducer handles API cache and state
     [apiSlice.reducerPath]: apiSlice.reducer,
   },

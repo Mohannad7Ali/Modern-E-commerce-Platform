@@ -4,6 +4,7 @@ import './globals.css'
 import MainLayout from '@/components/templates/MainLayout'
 import ClientProviders from '@/providers/ClientProvider'
 import { ApolloWrapper } from '@/lib/apollo/wrapper'
+import Toast from '@/components/feedback/Toast'
 const poppins = Poppins({
   variable: '--font-poppins',
   weight: ['400', '500', '600', '700', '800'],
@@ -25,7 +26,10 @@ export default function RootLayout({
       <body className={`${poppins.variable} antialiased`}>
         <ClientProviders>
           <ApolloWrapper>
-            <MainLayout>{children}</MainLayout>
+            <MainLayout>
+              {children}
+              <Toast />
+            </MainLayout>
           </ApolloWrapper>
         </ClientProviders>
       </body>
