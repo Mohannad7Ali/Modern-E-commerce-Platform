@@ -1,6 +1,7 @@
 import AppError from '@/shared/errors/AppError';
-import { PrismaClient } from '@/generated/prisma-client/client';
+import { PrismaClient, Prisma } from '@/generated/prisma-client/client';
 import { Request, Response } from 'express';
+
 interface FilterType {
   search?: string;
   isNew?: boolean;
@@ -10,77 +11,110 @@ interface FilterType {
   minPrice?: number;
   maxPrice?: number;
   categoryId?: string;
-  flags?: string[];
+  flags?: string[] | null;
 }
+
 export interface Context {
   prisma: PrismaClient;
   req: Request;
   res: Response;
 }
+
 export const productResolvers = {
   Query: {
     products: async (
-      _: any,
-      { first = 10, skip = 0, filters = {} }: { first?: number; skip?: number; filters?: FilterType },
+      _: unknown,
+      { first = 10, skip = 0, filters }: { first?: number; skip?: number; filters?: FilterType | null },
       context: Context
     ) => {
-      const where: any = {};
-      // search filter
-      if (filters.search) {
-        // OR is conditoin array
+      // Handle null filters safely
+      const safeFilters: FilterType = filters ?? {};
+
+      const where: Prisma.ProductWhereInput = {};
+
+      /* -------------------- SEARCH -------------------- */
+      if (safeFilters.search) {
         where.OR = [
-          { name: { contains: filters.search, mode: 'insensitive' } },
-          { description: { contains: filters.search, mode: 'insensitive' } }
+          { name: { contains: safeFilters.search, mode: 'insensitive' } },
+          { description: { contains: safeFilters.search, mode: 'insensitive' } }
         ];
       }
-      // flag filters
-      if (filters.isNew !== undefined) where.isNew = filters.isNew;
-      if (filters.isFeatured !== undefined) where.isFeatured = filters.isFeatured;
-      if (filters.isTrending !== undefined) where.isTrending = filters.isTrending;
-      if (filters.isBestSeller !== undefined) where.isBestSeller = filters.isBestSeller;
-      // OR logic for multiple flags
-      if (filters.flags && filters.flags.length > 0) {
-        const flagConditions = filters.flags.map(flag => {
-          return { [flag]: true };
-        });
-        if (!where.OR) where.OR = [];
-        where.OR = [...where.OR, ...flagConditions];
+
+      /* -------------------- DIRECT BOOLEAN FILTERS -------------------- */
+      if (safeFilters.isNew !== undefined) where.isNew = safeFilters.isNew;
+      if (safeFilters.isFeatured !== undefined) where.isFeatured = safeFilters.isFeatured;
+      if (safeFilters.isTrending !== undefined) where.isTrending = safeFilters.isTrending;
+      if (safeFilters.isBestSeller !== undefined) where.isBestSeller = safeFilters.isBestSeller;
+
+      /* -------------------- FLAGS (SAFE MAPPING) -------------------- */
+      if (safeFilters.flags && safeFilters.flags.length > 0) {
+        const flagMap: Record<string, keyof Prisma.ProductWhereInput> = {
+          new: 'isNew',
+          featured: 'isFeatured',
+          trending: 'isTrending',
+          bestSeller: 'isBestSeller'
+        };
+
+        const flagConditions: Prisma.ProductWhereInput[] = safeFilters.flags
+          .filter(flag => flagMap[flag])
+          .map(flag => ({
+            [flagMap[flag]]: true
+          }));
+
+        if (flagConditions.length > 0) {
+          where.OR = where.OR ? [...(where.OR as Prisma.ProductWhereInput[]), ...flagConditions] : flagConditions;
+        }
       }
-      //category filter
-      if (filters.categoryId) {
-        where.categoryId = filters.categoryId;
+
+      /* -------------------- CATEGORY -------------------- */
+      if (safeFilters.categoryId) {
+        where.categoryId = safeFilters.categoryId;
       }
-      //price filter
-      if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
+
+      /* -------------------- PRICE RANGE -------------------- */
+      if (safeFilters.minPrice !== undefined || safeFilters.maxPrice !== undefined) {
         where.variants = {
           some: {
             price: {
-              ...(filters.minPrice !== undefined && { gte: filters.minPrice }),
-              ...(filters.maxPrice !== undefined && { lte: filters.maxPrice })
+              ...(safeFilters.minPrice !== undefined && {
+                gte: safeFilters.minPrice
+              }),
+              ...(safeFilters.maxPrice !== undefined && {
+                lte: safeFilters.maxPrice
+              })
             }
           }
         };
       }
 
-      // get data
-      const products = await context.prisma.product.findMany({
-        where,
-        take: first,
-        skip,
-        include: {
-          category: true,
-          variants: true,
-          reviews: true
-        }
-      });
-      const totalCount = await context.prisma.product.count({ where });
+      /* -------------------- DATABASE QUERIES -------------------- */
+      const [products, totalCount] = await Promise.all([
+        context.prisma.product.findMany({
+          where,
+          take: first,
+          skip,
+          include: {
+            category: true,
+            variants: true,
+            reviews: {
+              include: {
+                user: true
+              }
+            }
+          }
+        }),
+        context.prisma.product.count({ where })
+      ]);
+
       return {
         products,
         hasMore: skip + products.length < totalCount,
         totalCount
       };
     },
-    product: async (_: any, { slug }: { slug: string }, context: Context) => {
+
+    /* -------------------- SINGLE PRODUCT -------------------- */
+    product: async (_: unknown, { slug }: { slug: string }, context: Context) => {
       const product = await context.prisma.product.findUnique({
         where: { slug },
         include: {
@@ -95,99 +129,32 @@ export const productResolvers = {
               }
             }
           },
-          reviews: true
+          reviews: {
+            include: {
+              user: true
+            }
+          }
         }
       });
+
       if (!product) {
         throw new AppError(404, 'Product not found');
       }
+
       return product;
     },
-    newProducts: async (_: any, { first = 10, skip = 0 }: { first?: number; skip?: number }, context: Context) => {
-      const totalCount = await context.prisma.product.count({
-        where: { isNew: true }
-      });
-      const products = await context.prisma.product.findMany({
-        where: { isNew: true },
-        take: first,
-        skip,
-        include: {
-          category: true,
-          variants: true,
-          reviews: true
-        }
-      });
-      return {
-        products,
-        hasMore: skip + products.length < totalCount,
-        totalCount
-      };
-    },
-    featuredProducts: async (_: any, { first = 10, skip = 0 }: { first?: number; skip?: number }, context: Context) => {
-      const totalCount = await context.prisma.product.count({
-        where: { isFeatured: true }
-      });
-      const products = await context.prisma.product.findMany({
-        where: { isFeatured: true },
-        take: first,
-        skip,
-        include: {
-          category: true,
-          variants: true,
-          reviews: true
-        }
-      });
-      return {
-        products,
-        hasMore: skip + products.length < totalCount,
-        totalCount
-      };
-    },
-    trendingProducts: async (_: any, { first = 10, skip = 0 }: { first?: number; skip?: number }, context: Context) => {
-      const totalCount = await context.prisma.product.count({
-        where: { isTrending: true }
-      });
-      const products = await context.prisma.product.findMany({
-        where: { isTrending: true },
-        take: first,
-        skip,
-        include: {
-          category: true,
-          variants: true,
-          reviews: true
-        }
-      });
-      return {
-        products,
-        hasMore: skip + products.length < totalCount,
-        totalCount
-      };
-    },
-    bestSellerProducts: async (
-      _: any,
-      { first = 10, skip = 0 }: { first?: number; skip?: number },
-      context: Context
-    ) => {
-      const totalCount = await context.prisma.product.count({
-        where: { isBestSeller: true }
-      });
-      const products = await context.prisma.product.findMany({
-        where: { isBestSeller: true },
-        take: first,
-        skip,
-        include: {
-          category: true,
-          variants: true,
-          reviews: true
-        }
-      });
-      return {
-        products,
-        hasMore: skip + products.length < totalCount,
-        totalCount
-      };
-    },
-    categories: async (_: any, __: any, context: Context) => {
+
+    /* -------------------- FLAG QUERIES -------------------- */
+    newProducts: (_: unknown, args: any, context: Context) => getFlagProducts('isNew', args, context),
+
+    featuredProducts: (_: unknown, args: any, context: Context) => getFlagProducts('isFeatured', args, context),
+
+    trendingProducts: (_: unknown, args: any, context: Context) => getFlagProducts('isTrending', args, context),
+
+    bestSellerProducts: (_: unknown, args: any, context: Context) => getFlagProducts('isBestSeller', args, context),
+
+    /* -------------------- CATEGORIES -------------------- */
+    categories: async (_: unknown, __: unknown, context: Context) => {
       return context.prisma.category.findMany({
         include: {
           products: {
@@ -198,15 +165,43 @@ export const productResolvers = {
         }
       });
     }
-  },
-  Product: {
-    reviews: (parent: any, _: any, context: Context) => {
-      return context.prisma.review.findMany({
-        where: { productId: parent.id },
-        include: {
-          user: true
-        }
-      });
-    }
   }
 };
+
+/* ========================================================= */
+/* =================== HELPER FUNCTION ===================== */
+/* ========================================================= */
+
+async function getFlagProducts(
+  field: 'isNew' | 'isFeatured' | 'isTrending' | 'isBestSeller',
+  { first = 10, skip = 0 }: { first?: number; skip?: number },
+  context: Context
+) {
+  const where: Prisma.ProductWhereInput = {
+    [field]: true
+  };
+
+  const [products, totalCount] = await Promise.all([
+    context.prisma.product.findMany({
+      where,
+      take: first,
+      skip,
+      include: {
+        category: true,
+        variants: true,
+        reviews: {
+          include: {
+            user: true
+          }
+        }
+      }
+    }),
+    context.prisma.product.count({ where })
+  ]);
+
+  return {
+    products,
+    hasMore: skip + products.length < totalCount,
+    totalCount
+  };
+}

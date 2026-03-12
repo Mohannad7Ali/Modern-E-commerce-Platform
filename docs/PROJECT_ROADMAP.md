@@ -40,8 +40,8 @@ Bootstrap a production-ready Express backend.
 
 ### ✅ Tasks
 
-- [ ] Setup Express + TypeScript project
-- [ ] Setup ESLint, Prettier, tsconfig
+- [✔] Setup Express + TypeScript project
+- [✔] Setup ESLint, Prettier, tsconfig
 - [ ] Setup environment configuration (dotenv / config layer)
 - [ ] Setup logging (Winston)
 - [ ] Global error handling layer
