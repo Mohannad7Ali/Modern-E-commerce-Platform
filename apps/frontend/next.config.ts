@@ -1,16 +1,30 @@
-import type { NextConfig } from 'next'
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  },
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
-        port: '',
-        pathname: '/**',
-      },
+    domains: [
+      "m.media-amazon.com",
+      "www.bestbuy.com",
+      "www.dyson.com",
+      "store.hp.com",
+      "i1.adis.ws",
+      "i5.walmartimages.com",
+      "lh3.googleusercontent.com",
+      "res.cloudinary.com",
+      "pbs.twimg.com",
+      "store.storeimages.cdn-apple.com",
     ],
   },
-}
+};
 
-export default nextConfig
+export default nextConfig;

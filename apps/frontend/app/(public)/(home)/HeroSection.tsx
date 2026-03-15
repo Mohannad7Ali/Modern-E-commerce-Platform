@@ -1,40 +1,102 @@
-'use client'
-import sliderData from '@/lib/constants/sliderData'
-import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useState, useEffect } from 'react'
-import { ChevronLeft, ChevronRight, Play, ShoppingBag, Star } from 'lucide-react'
-import Link from 'next/link'
+"use client";
+
+import SliderImg1 from "@/app/assets/images/laptop-slider.jpg";
+import SliderImg2 from "@/app/assets/images/furniture-slider.jpeg";
+import SliderImg3 from "@/app/assets/images/shirt-slider.jpg";
+import SliderImg4 from "@/app/assets/images/shoes-slider.jpeg";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Play,
+  ShoppingBag,
+  Star,
+} from "lucide-react";
+import Link from "next/link";
+
 interface HeroSectionProps {
-  isPreview?: boolean
+  isPreview?: boolean;
 }
 
 const HeroSection = ({ isPreview = false }: HeroSectionProps) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const sliderData = [
+    {
+      image: SliderImg1,
+      title: "Discover Amazing Deals",
+      subtitle: "Up to 70% off on selected items",
+      ctaText: "Shop Now",
+      ctaLink: "/shop",
+      badge: "New Arrivals",
+    },
+    {
+      image: SliderImg2,
+      title: "Premium Quality Products",
+      subtitle: "Handpicked items for your lifestyle",
+      ctaText: "Explore",
+      ctaLink: "/shop",
+      badge: "Featured",
+    },
+    {
+      image: SliderImg3,
+      title: "Fast & Free Shipping",
+      subtitle: "On orders over $50",
+      ctaText: "Learn More",
+      ctaLink: "/shop",
+      badge: "Limited Time",
+    },
+    {
+      image: SliderImg4,
+      title: "Fast & Free Shipping",
+      subtitle: "On orders over $50",
+      ctaText: "Learn More",
+      ctaLink: "/shop",
+      badge: "Limited Time",
+    },
+  ];
+
   useEffect(() => {
     if (!isPreview) {
       const interval = setInterval(() => {
-        setCurrentImageIndex(prev => (prev === sliderData.length - 1 ? 0 : prev + 1))
-      }, 7000)
-      return () => clearInterval(interval)
+        setCurrentImageIndex((prev) =>
+          prev === sliderData.length - 1 ? 0 : prev + 1
+        );
+      }, 6000);
+      return () => clearInterval(interval);
     }
-  }, [isPreview, sliderData.length])
+  }, [isPreview, sliderData.length]);
+
   const nextSlide = () => {
-    setCurrentImageIndex(prev => (prev === sliderData.length - 1 ? 0 : prev + 1))
-  }
+    setCurrentImageIndex((prev) =>
+      prev === sliderData.length - 1 ? 0 : prev + 1
+    );
+  };
+
   const prevSlide = () => {
-    setCurrentImageIndex(prev => (prev === 0 ? sliderData.length - 1 : prev - 1))
-  }
-  const gotoSlide = (index: number) => {
-    setCurrentImageIndex(index)
-  }
-  const currentSlide = sliderData[currentImageIndex]
+    setCurrentImageIndex((prev) =>
+      prev === 0 ? sliderData.length - 1 : prev - 1
+    );
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentImageIndex(index);
+  };
+
+  const currentSlide = sliderData[currentImageIndex];
+
   return (
-    <section className={`relative w-full ${isPreview ? 'my-2 scale-90' : 'my-2 sm:my-4 lg:my-6'}`}>
+    <section
+      className={`relative w-full ${
+        isPreview ? "scale-90 my-2" : "my-2 sm:my-4 lg:my-6"
+      }`}
+    >
       <div className="relative w-full overflow-hidden rounded-2xl shadow-2xl">
         {/* Hero Image Slider */}
         <div className="relative w-full">
-          <div className="relative aspect-[12/16] w-full sm:aspect-[16/7] lg:aspect-[16/6]">
+          <div className="aspect-[16/9] sm:aspect-[16/7] lg:aspect-[16/6] w-full relative">
             <AnimatePresence initial={false} mode="wait">
               <motion.div
                 key={currentImageIndex}
@@ -49,9 +111,9 @@ const HeroSection = ({ isPreview = false }: HeroSectionProps) => {
                 }}
                 transition={{
                   duration: 0.6,
-                  ease: 'easeInOut',
+                  ease: "easeInOut",
                 }}
-                className="absolute inset-0 h-full w-full"
+                className="absolute inset-0 w-full h-full"
               >
                 <Image
                   src={currentSlide.image}
@@ -73,10 +135,12 @@ const HeroSection = ({ isPreview = false }: HeroSectionProps) => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/20 px-3 py-1.5 text-white backdrop-blur-sm sm:mb-6 sm:gap-2 sm:px-4 sm:py-2"
+                        className="inline-flex items-center gap-1.5 sm:gap-2 bg-white/20 backdrop-blur-sm text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-4 sm:mb-6 border border-white/30"
                       >
                         <Star size={16} className="text-yellow-400" />
-                        <span className="text-xs font-medium sm:text-sm">{currentSlide.badge}</span>
+                        <span className="text-xs sm:text-sm font-medium">
+                          {currentSlide.badge}
+                        </span>
                       </motion.div>
 
                       {/* Title */}
@@ -84,7 +148,7 @@ const HeroSection = ({ isPreview = false }: HeroSectionProps) => {
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="mb-3 text-2xl leading-tight font-bold text-white sm:mb-4 sm:text-3xl lg:text-4xl xl:text-6xl"
+                        className="text-2xl sm:text-3xl lg:text-4xl xl:text-6xl font-bold text-white mb-3 sm:mb-4 leading-tight"
                       >
                         {currentSlide.title}
                       </motion.h1>
@@ -94,7 +158,7 @@ const HeroSection = ({ isPreview = false }: HeroSectionProps) => {
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
-                        className="mb-6 max-w-lg text-base text-white/90 sm:mb-8 sm:text-lg lg:text-xl"
+                        className="text-base sm:text-lg lg:text-xl text-white/90 mb-6 sm:mb-8 max-w-lg"
                       >
                         {currentSlide.subtitle}
                       </motion.p>
@@ -107,9 +171,9 @@ const HeroSection = ({ isPreview = false }: HeroSectionProps) => {
                       >
                         <Link
                           href={currentSlide.ctaLink}
-                          className="inline-flex transform items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-gray-900 shadow-lg transition-all duration-300 hover:scale-105 hover:bg-gray-100 hover:shadow-xl sm:gap-3 sm:px-8 sm:py-4 sm:text-base"
+                          className="inline-flex items-center gap-2 sm:gap-3 bg-white text-gray-900 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
                         >
-                          <ShoppingBag size={16} className="sm:h-5 sm:w-5" />
+                          <ShoppingBag size={16} className="sm:w-5 sm:h-5" />
                           {currentSlide.ctaText}
                         </Link>
                       </motion.div>
@@ -124,28 +188,30 @@ const HeroSection = ({ isPreview = false }: HeroSectionProps) => {
         {/* Navigation Arrows */}
         <button
           onClick={prevSlide}
-          className="absolute top-1/2 left-2 hidden -translate-y-1/2 items-center justify-center rounded-full bg-white/20 p-2 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-white/30 sm:left-4 sm:flex sm:p-3"
+          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-2 sm:p-3 rounded-full transition-all duration-300 hover:scale-110 hidden sm:flex items-center justify-center"
           aria-label="Previous slide"
         >
-          <ChevronLeft size={20} className="sm:h-6 sm:w-6" />
+          <ChevronLeft size={20} className="sm:w-6 sm:h-6" />
         </button>
 
         <button
           onClick={nextSlide}
-          className="absolute top-1/2 right-2 hidden -translate-y-1/2 items-center justify-center rounded-full bg-white/20 p-2 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-white/30 sm:right-4 sm:flex sm:p-3"
+          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-2 sm:p-3 rounded-full transition-all duration-300 hover:scale-110 hidden sm:flex items-center justify-center"
           aria-label="Next slide"
         >
-          <ChevronRight size={20} className="sm:h-6 sm:w-6" />
+          <ChevronRight size={20} className="sm:w-6 sm:h-6" />
         </button>
 
         {/* Dots Indicator */}
-        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5 sm:bottom-6 sm:gap-2">
+        <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex gap-1.5 sm:gap-2">
           {sliderData.map((_, index) => (
             <button
               key={index}
-              onClick={() => gotoSlide(index)}
-              className={`h-2.5 w-2.5 rounded-full transition-all duration-300 sm:h-3 sm:w-3 ${
-                index === currentImageIndex ? 'scale-125 bg-white' : 'bg-white/50 hover:bg-white/75'
+              onClick={() => goToSlide(index)}
+              className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
+                index === currentImageIndex
+                  ? "bg-white scale-125"
+                  : "bg-white/50 hover:bg-white/75"
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />
@@ -154,13 +220,14 @@ const HeroSection = ({ isPreview = false }: HeroSectionProps) => {
 
         {/* Play/Pause Button */}
         <button
-          className="absolute top-2 right-2 rounded-full bg-white/20 p-1.5 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-white/30 sm:top-4 sm:right-4 sm:p-2"
+          className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-1.5 sm:p-2 rounded-full transition-all duration-300 hover:scale-110"
           aria-label="Play/Pause slideshow"
         >
-          <Play size={16} className="sm:h-5 sm:w-5" />
+          <Play size={16} className="sm:w-5 sm:h-5" />
         </button>
       </div>
     </section>
-  )
-}
-export default HeroSection
+  );
+};
+
+export default HeroSection;
