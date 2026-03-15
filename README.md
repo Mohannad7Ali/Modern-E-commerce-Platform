@@ -151,6 +151,10 @@ The **Horizon Store** architecture prioritizes security and data integrity, impl
 <p align="center">
   <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/dashboard_overview.png" alt="Admin Dashboard" width="48%">
   <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/dashboard_chat.png" alt="Live Chat" width="48%">
+  <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/analytics_dashboard.png" alt="analytics_dashboard" width="48%">
+  <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/homepage.png" alt="homepage" width="48%">
+  <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/sign-up.png" alt="homepage" width="48%">
+  <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/track_your_order.png" alt="track_your_order" width="48%">
 </p>
 
 > **Note:** The frontend is currently in active development. These screenshots showcase the administrative dashboards and real-time communication modules.
