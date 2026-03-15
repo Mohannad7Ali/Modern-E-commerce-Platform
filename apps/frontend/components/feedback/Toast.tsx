@@ -36,6 +36,7 @@ const Toast = () => {
   // ref keep its value during the whole lifecycle of the component and doesn't cause re-render when its value changes
   useEffect(() => {
     toasts.forEach(toast => {
+      //if there isnot any property with this id we add id with timer
       if (!timeoutRefs.current[toast.id]) {
         const timeoutId = setTimeout(() => {
           dispatch(removeToast(toast.id))
