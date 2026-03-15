@@ -14,6 +14,21 @@ This project highlights deep backend expertise: modular architecture, type-safe 
 
 ---
 
+## 📸 Screenshots
+
+### Backend-driven views (Frontend WIP)
+
+<p align="center">
+  <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/dashboard_overview.png" alt="Admin Dashboard" width="48%">
+  <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/dashboard_chat.png" alt="Live Chat" width="48%">
+  <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/analytics_dashboard.png" alt="analytics_dashboard" width="48%">
+  <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/homepage.png" alt="homepage" width="48%">
+  <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/sign-up.png" alt="homepage" width="48%">
+  <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/track_your_order.png" alt="track_your_order" width="48%">
+</p>
+
+> **Note:** The frontend is currently in active development. These screenshots showcase the administrative dashboards and real-time communication modules.
+
 ## 🚀 Quick Start
 
 ```bash
@@ -143,21 +158,6 @@ The **Horizon Store** architecture prioritizes security and data integrity, impl
 
 - **Schema Validation:** Every API request is validated against a schema before reaching the controller.
 - **Transaction Safety:** Use of Prisma Transactions to ensure atomicity in complex operations like order placement and payment processing.
-
-## 📸 Screenshots
-
-### Backend-driven views (Frontend WIP)
-
-<p align="center">
-  <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/dashboard_overview.png" alt="Admin Dashboard" width="48%">
-  <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/dashboard_chat.png" alt="Live Chat" width="48%">
-  <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/analytics_dashboard.png" alt="analytics_dashboard" width="48%">
-  <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/homepage.png" alt="homepage" width="48%">
-  <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/sign-up.png" alt="homepage" width="48%">
-  <img src="https://github.com/Mohannad7Ali/Modern-E-commerce-Platform/raw/main/assets/screenshots/track_your_order.png" alt="track_your_order" width="48%">
-</p>
-
-> **Note:** The frontend is currently in active development. These screenshots showcase the administrative dashboards and real-time communication modules.
 
 ## 🤝 Contributing
 
